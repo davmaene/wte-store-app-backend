@@ -283,6 +283,11 @@ export const __controlerUsers = {
                                 verificationcode: code
                             })
                                 .then(U => {
+                                    Services.onSendSMS({
+                                        to: fillphone({ phone }),
+                                        content: `WTE-${code} \nBonjour ${capitalizeWords({ text: user && user['nom'] })} Ceci est votre code de vérification`,
+                                        cb: (err, done) => { }
+                                    });
                                     return Response(res, 200, `Code : ${code} was send to ${fillphone({ phone })}`)
                                 })
                                 .catch(err => Response(res, 400, err))
