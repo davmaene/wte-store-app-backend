@@ -12,7 +12,7 @@ dotenv.config();
 const { APPPORT, APPCOOKIESNAME, APPRATELIMITMAXREQS, APPRATELIMITTIMING, APPAPIKEY } = process.env;
 
 const __app = express();
-const PORT = APPPORT || 4001;
+const PORT = APPPORT || 4009;
 
 const limiter = rateLimit({
     windowMs: parseInt(APPRATELIMITTIMING) * 60 * 1000,
