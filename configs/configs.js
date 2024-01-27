@@ -13,7 +13,7 @@ export const Configs = new Sequelize(
         port: APPDBPORT,
         host: APPDBHOST,
         dialect: APPDBDIALECT || "mysql",
-        logging: true,
+        logging: false,
         redisConfigsdialectOptions: {
             lockTimeout: 5000
         },

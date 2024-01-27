@@ -101,6 +101,9 @@ export const __controlerUsers = {
 
     signin: async (req, res, next) => {
         const { phone, password } = req.body;
+        console.log('====================================');
+        console.log(req.body);
+        console.log('====================================');
 
         try {
 
@@ -134,12 +137,12 @@ export const __controlerUsers = {
                     },
                     {
                         model: Provinces,
-                        required: true,
+                        required: false,
                         attributes: ['id', 'province']
                     },
                     {
                         model: Territoires,
-                        required: true,
+                        required: false,
                         attributes: ['id', 'territoire']
                     },
                     {
@@ -183,7 +186,7 @@ export const __controlerUsers = {
 
                                         } else {
 
-                                            transaction.rollback()
+                                            transaction.rollback()` `
                                             return Response(res, 400, "Unable to initialize User Token")
                                         }
                                     })
@@ -236,12 +239,12 @@ export const __controlerUsers = {
                     },
                     {
                         model: Provinces,
-                        required: true,
+                        required: false,
                         attributes: ['id', 'province']
                     },
                     {
                         model: Territoires,
-                        required: true,
+                        required: false,
                         attributes: ['id', 'territoire']
                     },
                     {
@@ -340,12 +343,12 @@ export const __controlerUsers = {
                     },
                     {
                         model: Provinces,
-                        required: true,
+                        required: false,
                         attributes: ['id', 'province']
                     },
                     {
                         model: Territoires,
-                        required: true,
+                        required: false,
                         attributes: ['id', 'territoire']
                     },
                     {
@@ -557,6 +560,43 @@ export const __controlerUsers = {
                 .catch(err => {
                     return Response(res, 503, err)
                 })
+        } catch (error) {
+            return Response(res, 500, error)
+        }
+    },
+
+    addroletouser: async (req, res, next) => {
+        const { iduser, idrole } = req.body;
+        if (!iduser || !idrole) return Response(res, 401, "This request must have at least ! idrole iduser")
+        try {
+            Services.addRoleToUser({
+                input: {
+                    idrole,
+                    iduser
+                },
+                transaction: null,
+                cb: (err, done) => {
+                    if (done) {
+                        const { code } = done;
+                        if (code === 200) {
+
+                            // Services.onSendSMS({
+                            //     to: fillphone({ phone }),
+                            //     content: `Une `,
+                            //     cb: (err, done) => { }
+                            // });
+                            // transaction.commit()
+                            return Response(res, 200, "The role ")
+                        } else {
+                            // transaction.rollback()
+                            return Response(res, 400, "Role not initialized correctly !")
+                        }
+                    } else {
+                        // transaction.rollback()
+                        return Response(res, 400, "Role not initialized correctly !")
+                    }
+                }
+            })
         } catch (error) {
             return Response(res, 500, error)
         }

@@ -33,10 +33,10 @@ export const capitalizeWords = ({ text }) => {
 
 export const formatUserModel = ({ model }) => {
 
-    const province = model && model['__tbl_province'];
-    const territoire = model && model['__tbl_territory'];
-    const village = model && model['__tbl_village'];
-    const roles = model && model['__tbl_roles'];
+    const province = model && model['__tbl_province'] ? model['__tbl_province'] : {};
+    const territoire = model && model['__tbl_territory'] ? model['__tbl_territory'] : {};
+    const village = model && model['__tbl_village'] ? model['__tbl_village'] : {};
+    const roles = model && model['__tbl_roles'] ? model['__tbl_roles'] : {};
 
     delete model['__tbl_roles']
     delete model['__tbl_province']
