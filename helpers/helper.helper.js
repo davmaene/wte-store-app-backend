@@ -17,6 +17,17 @@ export const groupArrayByPairs = ({ array }) => {
     return groupedArray;
 };
 
+export const unityMesure = [
+    {
+        id: 1,
+        unity: "Pièce"
+    },
+    {
+        id: 2,
+        unity: "Pièce"
+    }
+]
+
 export const waitingText = `Un instant ... ✍️`;
 export const inProgressText = `Un instant votre requête est en cours de traietement ... ✍️`;
 export const errorText = ` Une erreur de traitement vient de se produire. Nous sommes désolé pour le désagrement, veuillez réessayer un peu plus tard ! `;
