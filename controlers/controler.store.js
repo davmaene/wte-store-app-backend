@@ -5,6 +5,7 @@ import { randomLongNumber } from "../helpers/helper.random.js"
 export const __controlerStore = {
     bonentree: async (req, res, next) => {
         const trans = randomLongNumber({ length: 6 })
+        const { items } = req.body
         try {
 
         } catch (error) {
