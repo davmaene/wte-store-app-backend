@@ -63,8 +63,8 @@ export const formatUserModel = ({ model }) => {
 
     return {
         ...model,
-        province: province['province'] ?? ESCAPESTRING,
-        territoire: territoire['territoire'] ?? ESCAPESTRING,
+        province: (province['province'] ?? ESCAPESTRING),
+        territoire: (territoire['territoire'] ?? ESCAPESTRING),
         village: (village ? village['village'] : ESCAPESTRING),
         roles: roles.map(r => r && r['id'])
     }
