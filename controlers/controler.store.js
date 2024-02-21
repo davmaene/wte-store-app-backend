@@ -9,7 +9,7 @@ export const __controlerStore = {
         if(!Array.isArray(items)) return Response(res, 401, "Items must be a type of array !")
 
         try {
-            console.log(items);
+            
         } catch (error) {
             return Response(res, 500, error)
         }
