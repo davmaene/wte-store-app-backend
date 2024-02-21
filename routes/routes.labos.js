@@ -1,5 +1,5 @@
 import express from 'express';
-import { __controlerLaoratories } from '../controlers/controler.laboratories.js';
+import { __controlerLaoratories } from '../controlers/controler.guichets.js';
 import { laboModel, onValidate } from '../middleware/ware.datavalidator.js';
 
 export const __routesLaboratories = express.Router();

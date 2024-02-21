@@ -1,6 +1,6 @@
 import { capitalizeWords } from "../helpers/helper.helper.js"
 import { Response } from "../helpers/helper.message.js"
-import { Laboratories } from "../models/model.laboratories.js"
+import { Laboratories } from "../models/model.guichets.js"
 
 export const __controlerLaoratories = {
     
