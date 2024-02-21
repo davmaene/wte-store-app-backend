@@ -1,4 +1,5 @@
 import { Response } from "../helpers/helper.message.js"
+import { Guichets } from "../models/model.guichets.js"
 import { GStores } from "../models/model.guichetstores.js"
 
 export const __controlerGstore = {
@@ -8,6 +9,10 @@ export const __controlerGstore = {
     getstore: async (req, res, next) => {
         const { idguichet } = req.params
         try {
+
+            GStores.hasOne(Guichets, { foreignKey: "idguichet" });
+            Guichets.belongsTo(GStores, { foreignKey: "idguichet" });
+
             GStores.findOne({
                 where: {
                     idguichet: parseInt(idguichet)
@@ -15,7 +20,7 @@ export const __controlerGstore = {
             })
                 .then(st => {
                     if (st instanceof GStores) {
-                        
+
                     } else {
                         return Response(res, 400, st)
                     }
