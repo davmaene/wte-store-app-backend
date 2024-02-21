@@ -18,6 +18,7 @@ export const __controlerProduits = {
             return Response(res, 500, error)
         }
     },
+    
     add: async (req, res, next) => {
         const {
             produit,
