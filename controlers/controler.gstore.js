@@ -4,23 +4,35 @@ import { GStores } from "../models/model.guichetstores.js"
 
 export const __controlerGstore = {
     bonentree: async (req, res, next) => {
+        const { items } = req.body;
+        if (!items) return Response(res, 401, "This request must have at least items as paramter !")
+        try {
 
+        } catch (error) {
+            return Response(res, 500, error)
+        }
     },
     getstore: async (req, res, next) => {
         const { idguichet } = req.params
         try {
 
-            GStores.hasOne(Guichets, { foreignKey: "idguichet" });
-            Guichets.belongsTo(GStores, { foreignKey: "idguichet" });
+            Guichets.hasOne(GStores, { foreignKey: "idguichet" });
+            GStores.belongsTo(Guichets, { foreignKey: "idguichet" });
 
             GStores.findOne({
                 where: {
                     idguichet: parseInt(idguichet)
-                }
+                },
+                include: [
+                    {
+                        model: Guichets,
+                        required: true
+                    }
+                ]
             })
                 .then(st => {
                     if (st instanceof GStores) {
-
+                        return Response(res, 200, st)
                     } else {
                         return Response(res, 400, st)
                     }
