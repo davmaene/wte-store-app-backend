@@ -1,18 +1,33 @@
 import { capitalizeWords } from "../helpers/helper.helper.js"
 import { Response } from "../helpers/helper.message.js"
+import { Categories } from "../models/model.categories.js";
 import { Produits } from "../models/model.produits.js"
 import { v4 as uuidv4 } from 'uuid';
 
 export const __controlerProduits = {
     list: async (req, res, next) => {
         try {
+
+            Categories.hasOne(Produits, { foreignKey: "idcategory" })
+            Produits.belongsTo(Categories, { foreignKey: "idcategory" })
+
             Produits.findAndCountAll({
-                where: {}
+                where: {},
+                include: [
+                    {
+                        model: Categories,
+                        required: true,
+                        attribute: ['id', 'category']
+                    }
+                ]
             })
                 .then(({ rows, count }) => {
                     return Response(res, 200, { list: rows, length: count })
                 })
                 .catch((err) => {
+                    console.log('====================================');
+                    console.log(err);
+                    console.log('====================================');
                     return Response(res, 503, err)
                 })
         } catch (error) {
