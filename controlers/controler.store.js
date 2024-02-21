@@ -9,6 +9,8 @@ export const __controlerStore = {
     bonentree: async (req, res, next) => {
         const trans = randomLongNumber({ length: 16 })
         const { items } = req.body
+        const {} = req.currentuser;
+        console.log(req.currentuser);
         if (!Array.isArray(items)) return Response(res, 401, "Items must be a type of array !")
 
         try {

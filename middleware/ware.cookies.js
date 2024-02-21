@@ -13,16 +13,15 @@ export const exludedRoutes = [
 ]
 
 export const optionsSignin = {
-    expiresIn: '45m',
+    expiresIn: '14h',
     jwtid: '993'.toString()
 }
 
 export const onSignin = async ({ data }, cb) => {
     try {
-        jwt.sign(
-            {
-                ...data
-            },
+        jwt.sign({
+            ...data
+        },
             APPAPIKEY,
             { ...optionsSignin },
             (err, encoded) => {
@@ -30,7 +29,6 @@ export const onSignin = async ({ data }, cb) => {
             }
         )
     } catch (error) {
-        console.log(error);
         return cb(error, undefined)
     }
 };

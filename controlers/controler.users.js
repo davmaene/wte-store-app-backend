@@ -157,11 +157,13 @@ export const __controlerUsers = {
                                 plaintext: password
                             }, (err, verified) => {
                                 if (verified) {
-
+                                    let roles = user && user['__tbl_roles'];
+                                    roles = Array.from(roles).map(r => r && r['id'])
                                     Middleware.onSignin({
                                         data: {
                                             phone: user && user['phone'],
                                             uuid: user && user['uuid'],
+                                            roles,
                                             __id: user && user['id']
                                         }
                                     }, (err, token) => {
