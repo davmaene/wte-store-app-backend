@@ -17,6 +17,14 @@ export const groupArrayByPairs = ({ array }) => {
     return groupedArray;
 };
 
+export const addPersentToPrice = ({ persent, price }) => {
+
+    persent = parseFloat(persent)
+    price = parseFloat(price)
+
+    return (price + (price * (persent / 100)))
+}
+
 export const unityMesure = [
     {
         id: 1,

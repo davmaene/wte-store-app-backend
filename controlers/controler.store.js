@@ -6,8 +6,10 @@ export const __controlerStore = {
     bonentree: async (req, res, next) => {
         const trans = randomLongNumber({ length: 6 })
         const { items } = req.body
-        try {
+        if(!Array.isArray(items)) return Response(res, 401, "Items must be a type of array !")
 
+        try {
+            console.log(items);
         } catch (error) {
             return Response(res, 500, error)
         }

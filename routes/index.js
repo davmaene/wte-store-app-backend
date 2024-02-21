@@ -10,6 +10,7 @@ import { __routesCategories } from './routes.categories.js';
 import { __routesSubcategories } from './routes.subcategories.js';
 import { __routesUnities } from './routes.unities.js';
 import { __routesProduits } from './routes.produits.js';
+import { __routesStores } from './routes.store.js';
 
 export const Routes = express.Router();
 Routes.use('/users', __routesUsers)
@@ -23,3 +24,4 @@ Routes.use('/categories', __routesCategories)
 Routes.use('/subcategories', __routesSubcategories)
 Routes.use('/unities', __routesUnities)
 Routes.use('/produits', __routesProduits)
+Routes.use('/stores', __routesStores)

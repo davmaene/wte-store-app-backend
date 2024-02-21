@@ -1,4 +1,4 @@
-import { capitalizeWords } from "../helpers/helper.helper.js"
+import { addPersentToPrice, capitalizeWords } from "../helpers/helper.helper.js"
 import { Response } from "../helpers/helper.message.js"
 import { Categories } from "../models/model.categories.js";
 import { Produits } from "../models/model.produits.js"
