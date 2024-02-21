@@ -24,7 +24,35 @@ export const unityMesure = [
     },
     {
         id: 2,
-        unity: "Pièce"
+        unity: "Unité"
+    },
+    {
+        id: 3,
+        unity: "Litre"
+    },
+    {
+        id: 4,
+        unity: "Kits"
+    },
+    {
+        id: 5,
+        unity: "Rouleaux"
+    },
+    {
+        id: 6,
+        unity: "Boite"
+    },
+    {
+        id: 7,
+        unity: "Mètre"
+    },
+    {
+        id: 8,
+        unity: "Gallon"
+    },
+    {
+        id: 9,
+        unity: "Boitte"
     }
 ]
 
