@@ -11,6 +11,11 @@ export const Produits = Configs.define('__tbl_produits', {
         allowNull: true,
         defaultValue: process.env.APPESCAPESTRING
     },
+    qte: {
+        type: Sequelize.STRING,
+        allowNull: true,
+        defaultValue: process.env.APPESCAPESTRING
+    },
     image: {
         type: Sequelize.STRING,
         allowNull: true,

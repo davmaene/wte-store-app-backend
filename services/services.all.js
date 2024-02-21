@@ -885,6 +885,10 @@ export const Services = {
         });
     },
 
+    handleBonEntreeGuichet: async ({ tab_1, tab_2 }) => {
+        return []
+    },
+
     addRoleToUser: async ({ input, transaction, cb }) => {
         const { iduser, idrole } = input;
         if (!iduser || !idrole) return cb(undefined, { code: 401, message: "This request must have at least !", data: input });

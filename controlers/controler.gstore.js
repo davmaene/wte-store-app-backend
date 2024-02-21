@@ -20,10 +20,11 @@ export const __controlerGstore = {
             if (store instanceof Stores) {
                 const { items: asitems } = store;
                 const stock = Array.from(asitems).map(s => { return { [s['idproduit']]: s['qte'] } })
+                const demandes = Array.from(items).map(s => { return { [s['idproduit']]: s['qte'] } })
                 const approuvedItems = []
                 const notapprouvedItems = []
-                
-                console.log(stock);
+
+                console.log(stock, demandes);
                 // for (let index = 0; index < items.length; index++) {
                 //     const { idproduit, idunity, qte, prixachat, prixunitaire, fournisseur } = items[index];
                 //     const prd = await Produits.findOne({
@@ -63,6 +64,7 @@ export const __controlerGstore = {
                 //     .catch(err => {
                 //         return Response(res, 503, err)
                 //     })
+                return Response(res, 200, { approuvedItems, notapprouvedItems })
             } else {
                 return Response(res, 400, "The principal store is empty ! so we can not process with the request ")
             }
