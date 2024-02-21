@@ -51,24 +51,27 @@ export const __controlerGstore = {
                         notapprouvedItems.push(items[index])
                     }
                 }
-                
-                GStores.create({
-                    idguichet: parseInt(idguichet),
-                    transaction: trans,
-                    items: newItesms,
-                    createdby: __id
-                })
-                    .then(str => {
-                        if (str instanceof GStores) {
-                            return Response(res, 200, { transaction: trans, length: newItesms.length, items: newItesms })
-                        } else {
-                            return Response(res, 400, str)
-                        }
+
+                if (newItesms.length > 0) {
+                    await GStores.create({
+                        idguichet: parseInt(idguichet),
+                        transaction: trans,
+                        items: newItesms,
+                        createdby: __id
                     })
-                    .catch(err => {
-                        return Response(res, 503, err)
-                    })
-                return Response(res, 200, { approuvedItems, notapprouvedItems })
+                        .then(str => {
+                            if (str instanceof GStores) {
+                                return Response(res, 200, { transaction: trans, length: newItesms.length, items: newItesms })
+                            } else {
+                                return Response(res, 400, str)
+                            }
+                        })
+                        .catch(err => {
+                            return Response(res, 503, err)
+                        })
+                } else {
+                    return Response(res, 400, "The principal store is empty ! so we can not process with the request ")
+                }
             } else {
                 return Response(res, 400, "The principal store is empty ! so we can not process with the request ")
             }
