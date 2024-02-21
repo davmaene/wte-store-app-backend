@@ -6,6 +6,8 @@ import uploader from 'express-fileupload';
 import cookieParser from 'cookie-parser';
 import { Response } from './helpers/helper.message.js';
 import { Routes } from './routes/index.js';
+import { Middleware } from './middleware/ware.cookies.js';
+import { accessValidator } from './middleware/ware.ufw.js';
 
 dotenv.config();
 
@@ -45,7 +47,7 @@ __app.use((req, res, next) => {
     return next();
 });
 
-__app.get("/", (req, res, next) => {
+__app.get("/", accessValidator, (req, res, next) => {
     return Response(res, 200, {
         token: APPAPIKEY,
         message: "WTE STORE APP",
@@ -68,11 +70,11 @@ __app.get("/oauth/google", (req, res, next) => {
     })
 });
 
-__app.use("/api", Routes);
+__app.use("/api", accessValidator, Routes);
 
 __app.use("/guard/g/api", Routes);
 
-__app.use((req, res, next) => {
+__app.use(accessValidator, (req, res, next) => {
     return Response(res, 404, {
         message: "Ressource not found on this server !",
         url: req.url,

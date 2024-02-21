@@ -101,9 +101,6 @@ export const __controlerUsers = {
 
     signin: async (req, res, next) => {
         const { phone, password } = req.body;
-        console.log('====================================');
-        console.log(req.body);
-        console.log('====================================');
 
         try {
 
