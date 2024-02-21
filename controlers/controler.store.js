@@ -24,7 +24,7 @@ export const __controlerStore = {
                 if (prd instanceof Produits) {
                     const { prix, qte: asqte } = prd;
                     prd.update({
-                        qte: parseInt(asqte),
+                        qte: parseInt(asqte) + parseInt(qte),
                         updatedon: now({ options: {} }),
                         prix: parseFloat(prixunitaire)
                     })
