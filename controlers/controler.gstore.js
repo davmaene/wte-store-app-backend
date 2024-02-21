@@ -1,3 +1,5 @@
+import { Response } from "../helpers/helper.message.js"
+
 export const __controlerGstore = {
     bonentree: async (req, res, next) => {
 
@@ -7,7 +9,7 @@ export const __controlerGstore = {
         try {
             
         } catch (error) {
-            
+            return Response(res, 500, error)
         }
     }
 }
