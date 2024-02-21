@@ -51,6 +51,11 @@ export const Produits = Configs.define('__tbl_produits', {
         allowNull: false,
         defaultValue: now({ options: {} })
     },
+    updatedon: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        defaultValue: now({ options: {} })
+    },
     status: {
         type: Sequelize.INTEGER,
         allowNull: true,
