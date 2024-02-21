@@ -32,7 +32,7 @@ export const Produits = Configs.define('__tbl_produits', {
         defaultValue: 0
     },
     currency: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         allowNull: true,
         defaultValue: 0
     },
