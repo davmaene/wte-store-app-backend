@@ -19,12 +19,7 @@ export const __controlerGstore = {
             })
             if (store instanceof Stores) {
                 const { items: asitems } = store;
-                const stock = Array.from(asitems).map(s => { return { [s['idproduit']]: s['qte'] } })
-                const demandes = Array.from(items).map(s => { return { [s['idproduit']]: s['qte'] } })
-                const approuvedItems = []
-                const notapprouvedItems = []
 
-                console.log(stock, demandes);
                 // for (let index = 0; index < items.length; index++) {
                 //     const { idproduit, idunity, qte, prixachat, prixunitaire, fournisseur } = items[index];
                 //     const prd = await Produits.findOne({
