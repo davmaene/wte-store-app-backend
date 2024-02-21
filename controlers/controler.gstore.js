@@ -111,5 +111,9 @@ export const __controlerGstore = {
         } catch (error) {
             return Response(res, 500, error)
         }
+    },
+
+    sale: async (req, res, next) => {
+        
     }
 }
