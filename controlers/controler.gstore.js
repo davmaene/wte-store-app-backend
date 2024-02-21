@@ -1,4 +1,5 @@
 import { Response } from "../helpers/helper.message.js"
+import { now } from "../helpers/helper.moment.js";
 import { randomLongNumber } from "../helpers/helper.random.js";
 import { Guichets } from "../models/model.guichets.js"
 import { GStores } from "../models/model.guichetstores.js"
@@ -36,7 +37,6 @@ export const __controlerGstore = {
                             prd.update({
                                 qte: parseInt(asqte) - parseInt(qte),
                                 updatedon: now({ options: {} }),
-                                prix: parseFloat(prixunitaire)
                             })
                             newItesms.push({
                                 idproduit,
