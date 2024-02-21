@@ -7,7 +7,7 @@ import { Stores } from "../models/model.store.js";
 export const __controlerGstore = {
     bonentree: async (req, res, next) => {
         const { items, idguichet } = req.body;
-        if (!items) return Response(res, 401, "This request must have at least items as paramter !")
+        if (!items || !idguichet) return Response(res, 401, "This request must have at least items as paramter !")
         const trans = randomLongNumber({ length: 16 })
         const { phone: asphone, uuid, roles, __id, iat, exp, jti } = req.currentuser;
         if (!Array.isArray(items)) return Response(res, 401, "Items must be a type of array !")
@@ -57,7 +57,7 @@ export const __controlerGstore = {
                     .catch(err => {
                         return Response(res, 503, err)
                     })
-            }else{
+            } else {
                 return Response(res, 400, "The principal store is empty !")
             }
         } catch (error) {
