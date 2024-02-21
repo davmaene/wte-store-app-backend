@@ -67,6 +67,7 @@ export const __controlerGstore = {
             return Response(res, 500, error)
         }
     },
+    
     getstore: async (req, res, next) => {
         const { idguichet } = req.params
         try {
