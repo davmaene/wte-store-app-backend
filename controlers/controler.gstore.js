@@ -19,46 +19,55 @@ export const __controlerGstore = {
             })
             if (store instanceof Stores) {
                 const { items: asitems } = store;
+                const newItesms = []
+                const approuvedItems = [];
+                const notapprouvedItems = [];
 
-                // for (let index = 0; index < items.length; index++) {
-                //     const { idproduit, idunity, qte, prixachat, prixunitaire, fournisseur } = items[index];
-                //     const prd = await Produits.findOne({
-                //         where: {
-                //             id: parseInt(idproduit)
-                //         }
-                //     })
-                //     if (prd instanceof Produits) {
-                //         const { prix } = prd;
-                //         prd.update({
-                //             updatedon: now({ options: {} }),
-                //             prix: parseFloat(prixunitaire)
-                //         })
-                //         newItesms.push({
-                //             idproduit,
-                //             prix: parseFloat(prixunitaire),
-                //             prixachat: parseFloat(prixachat),
-                //             fournisseur,
-                //             qte,
-                //             idunity
-                //         })
-                //     }
-                // }
-                // GStores.create({
-                //     idguichet: parseInt(idguichet),
-                //     transaction: trans,
-                //     items: newItesms,
-                //     createdby: __id
-                // })
-                //     .then(str => {
-                //         if (str instanceof GStores) {
-                //             return Response(res, 200, { transaction: trans, length: newItesms.length, items: newItesms })
-                //         } else {
-                //             return Response(res, 400, str)
-                //         }
-                //     })
-                //     .catch(err => {
-                //         return Response(res, 503, err)
-                //     })
+                for (let index = 0; index < items.length; index++) {
+                    const { idproduit, qte } = items[index];
+                    const prd = await Produits.findOne({
+                        where: {
+                            id: parseInt(idproduit)
+                        }
+                    })
+                    if (prd instanceof Produits) {
+                        const { prix, qte: asqte } = prd;
+                        if (asqte >= qte) {
+                            prd.update({
+                                qte: parseInt(asqte) - parseInt(qte),
+                                updatedon: now({ options: {} }),
+                                prix: parseFloat(prixunitaire)
+                            })
+                            newItesms.push({
+                                idproduit,
+                                prix: parseFloat(prix),
+                                qte
+                            })
+                            approuvedItems.push(items[index])
+                        } else {
+                            notapprouvedItems.push(items[index])
+                        }
+                    } else {
+                        notapprouvedItems.push(items[index])
+                    }
+                }
+                
+                GStores.create({
+                    idguichet: parseInt(idguichet),
+                    transaction: trans,
+                    items: newItesms,
+                    createdby: __id
+                })
+                    .then(str => {
+                        if (str instanceof GStores) {
+                            return Response(res, 200, { transaction: trans, length: newItesms.length, items: newItesms })
+                        } else {
+                            return Response(res, 400, str)
+                        }
+                    })
+                    .catch(err => {
+                        return Response(res, 503, err)
+                    })
                 return Response(res, 200, { approuvedItems, notapprouvedItems })
             } else {
                 return Response(res, 400, "The principal store is empty ! so we can not process with the request ")
