@@ -18,9 +18,12 @@ export const __controlerGstore = {
                 order: [['id', 'DESC']],
             })
             if (store instanceof Stores) {
-                const { items: asitems } = store
-                const newItesms = []
-                console.log(asitems);
+                const { items: asitems } = store;
+                const stock = Array.from(asitems).map(s => { return { [s['idproduit']]: s['qte'] } })
+                const approuvedItems = []
+                const notapprouvedItems = []
+                
+                console.log(stock);
                 // for (let index = 0; index < items.length; index++) {
                 //     const { idproduit, idunity, qte, prixachat, prixunitaire, fournisseur } = items[index];
                 //     const prd = await Produits.findOne({
@@ -67,7 +70,7 @@ export const __controlerGstore = {
             return Response(res, 500, error)
         }
     },
-    
+
     getstore: async (req, res, next) => {
         const { idguichet } = req.params
         try {
