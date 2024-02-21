@@ -98,9 +98,26 @@ export const __controlerGstore = {
                     }
                 ]
             })
-                .then(st => {
+                .then(async st => {
                     if (st instanceof GStores) {
-                        return Response(res, 200, st)
+                        const { items } = st;
+                        const produits = []
+                        for (let index = 0; index < items.length; index++) {
+                            const { idproduit, qte } = items[index];
+                            let prd = await Produits.findOne({
+                                where: {
+                                    id: parseInt(idproduit),
+                                },
+                                attributes: ['id', 'prix', 'produit', 'currency', 'description', 'uuid']
+                            })
+                            if (prd instanceof Produits) {
+                                prd = prd.toJSON()
+                                produits.push({ ...prd, qte });
+                            }
+                        }
+                        st = st.toJSON()
+                        delete st['items']
+                        return Response(res, 200, { ...st, __tbl_produits: produits })
                     } else {
                         return Response(res, 400, st)
                     }
@@ -114,6 +131,6 @@ export const __controlerGstore = {
     },
 
     sale: async (req, res, next) => {
-        
+
     }
 }
