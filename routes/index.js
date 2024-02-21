@@ -9,6 +9,7 @@ import { __routesLaboratories } from './routes.labos.js';
 import { __routesCategories } from './routes.categories.js';
 import { __routesSubcategories } from './routes.subcategories.js';
 import { __routesUnities } from './routes.unities.js';
+import { __routesProduits } from './routes.prosuits.js';
 
 export const Routes = express.Router();
 Routes.use('/users', __routesUsers)
@@ -21,3 +22,4 @@ Routes.use('/guichets', __routesLaboratories)
 Routes.use('/categories', __routesCategories)
 Routes.use('/subcategories', __routesSubcategories)
 Routes.use('/unities', __routesUnities)
+Routes.use('/produits', __routesProduits)
