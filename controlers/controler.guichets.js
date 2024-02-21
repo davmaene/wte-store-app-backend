@@ -1,9 +1,9 @@
 import { capitalizeWords } from "../helpers/helper.helper.js"
 import { Response } from "../helpers/helper.message.js"
-import { Laboratories } from "../models/model.guichets.js"
+import { Guichets as Laboratories } from "../models/model.guichets.js"
 
 export const __controlerLaoratories = {
-    
+
     list: async (req, res, next) => {
         try {
             Laboratories.findAndCountAll({
@@ -38,7 +38,6 @@ export const __controlerLaoratories = {
                     else return Response(res, 400, lb)
                 })
                 .catch(err => {
-                    console.log(err);
                     return Response(res, 503, err)
                 })
         } catch (error) {

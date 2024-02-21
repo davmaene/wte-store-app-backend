@@ -5,7 +5,7 @@ import { now } from '../helpers/helper.moment.js';
 
 dotenv.config()
 
-export const Laboratories = Configs.define('__tbl_guichets', {
+export const Guichets = Configs.define('__tbl_guichets', {
     uuid: {
         type: Sequelize.STRING,
         allowNull: true,
@@ -56,9 +56,9 @@ export const Laboratories = Configs.define('__tbl_guichets', {
     freezeTableName: true
 });
 
-Laboratories.sync({ alter: true })
+Guichets.sync({ alter: true })
     .then(() => {
-        console.log('=======> Cerated done `table Laboratories` ');
+        console.log('=======> Cerated done `table Guichets` ');
     })
     .catch((error) => {
         console.error('Une erreur s\'est produite lors de la création de la table :', error);
