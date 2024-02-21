@@ -5,7 +5,7 @@ import { __routesProvinces } from './routes.provinces.js';
 import { _routesterritoires } from './routes.territoires.js';
 import { _routesVillage } from './routes.village.js';
 import { __routesServices } from './routes.services.js';
-import { __routesLaboratories } from './routes.labos.js';
+import { __routesLaboratories } from './routes.guichets.js';
 import { __routesCategories } from './routes.categories.js';
 import { __routesSubcategories } from './routes.subcategories.js';
 import { __routesUnities } from './routes.unities.js';
