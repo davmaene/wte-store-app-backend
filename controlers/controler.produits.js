@@ -17,7 +17,7 @@ export const __controlerProduits = {
                     {
                         model: Categories,
                         required: true,
-                        attribute: ['id', 'category']
+                        attributes: ['id', 'category']
                     }
                 ]
             })
