@@ -60,7 +60,7 @@ export const Users = Configs.define('__tbl_users', {
         allowNull: false,
         defaultValue: 0
     },
-    idlabo: {
+    idguichet: {
         type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 0

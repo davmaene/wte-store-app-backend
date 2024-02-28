@@ -15,6 +15,7 @@ import { Middleware } from "../middleware/ware.cookies.js";
 import { v4 as uuidv4 } from 'uuid';
 import { now } from "../helpers/helper.moment.js";
 import { Op } from "sequelize";
+import { Guichets } from "../models/model.guichets.js";
 
 export const __controlerUsers = {
 
@@ -118,6 +119,9 @@ export const __controlerUsers = {
             Villages.hasOne(Users, { foreignKey: "id" });
             Users.belongsTo(Villages, { foreignKey: "idvillage" });
 
+            Guichets.hasOne(Users, { foreignKey: "id" });
+            Users.belongsTo(Guichets, { foreignKey: "idguichet" });
+
             Users.findOne({
                 where: {
                     status: 1,
@@ -131,6 +135,11 @@ export const __controlerUsers = {
                         model: Roles,
                         required: true,
                         attributes: ['id', 'role']
+                    },
+                    {
+                        model: Guichets,
+                        required: true,
+                        attributes: ['id', 'guichet', 'adresse']
                     },
                     {
                         model: Provinces,

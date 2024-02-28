@@ -8,6 +8,7 @@ import { Provinces } from '../models/model.provinces.js';
 import { Territoires } from '../models/model.territoirs.js';
 import { Villages } from '../models/model.villages.js';
 import nodemailer from 'nodemailer';
+import { Users } from '../models/model.users.js';
 
 dotenv.config();
 
@@ -898,6 +899,33 @@ export const Services = {
                 TblRoleId: idrole,
                 TblUserId: iduser
             }, { transaction })
+                .then(role => {
+                    if (role instanceof Hasrole) {
+                        return cb(undefined, { code: 200, message: "Done", data: role.toJSON() })
+                    }
+                    else {
+                        return cb(undefined, { code: 400, message: "Error unknown", data: role })
+                    }
+                })
+                .catch(err => {
+                    return cb(undefined, { code: 503, message: "Error on ", data: err })
+                })
+        } catch (error) {
+            return cb(undefined, { code: 500, message: "Error", data: error })
+        }
+    },
+
+    addUserToGuichet: async ({ input, transaction, cb }) => {
+        const { iduser, idguichet } = input;
+        if (!iduser || !idguichet) return cb(undefined, { code: 401, message: "This request must have at least !", data: input });
+        try {
+            Users.update({
+                idguichet
+            }, {
+                where: {
+                    id: iduser
+                }
+            })
                 .then(role => {
                     if (role instanceof Hasrole) {
                         return cb(undefined, { code: 200, message: "Done", data: role.toJSON() })

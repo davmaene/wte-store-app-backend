@@ -21,6 +21,9 @@ export const __controlerLaoratories = {
             return Response(res, 500, error)
         }
     },
+    addusertoguichet: async (req, res, next) => {
+        
+    },
     add: async (req, res, next) => {
         const { guichet, description, adresse, idprovince, idterritoire, idresponsable, idvillage } = req.body;
         try {
