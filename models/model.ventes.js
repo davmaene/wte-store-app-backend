@@ -7,44 +7,54 @@ dotenv.config()
 
 const { ESCAPESTRING } = process.env;
 
-export const GStores = Configs.define('__tbl_gstores', {
-    transaction: {
+export const Ventes = Configs.define('__tbl_ventes', {
+    idproduit: {
         type: Sequelize.STRING,
         allowNull: false,
     },
-    items: {
-        type: Sequelize.JSON,
+    prixvente: {
+        type: Sequelize.FLOAT,
         allowNull: false,
-        defaultValue: []
+        defaultValue: 0
+    },
+    currency: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        defaultValue: "USD"
+    },
+    createdby: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+    },
+    createdonunix: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0
     },
     createdon: {
         type: Sequelize.STRING,
         allowNull: false,
         defaultValue: now({ options: {} })
     },
-    createdby: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-        defaultValue: 1
-    },
     idguichet: {
         type: Sequelize.INTEGER,
-        allowNull: true,
-        defaultValue: 1
+        allowNull: false,
+        defaultValue: 0
     },
     status: {
         type: Sequelize.INTEGER,
         allowNull: true,
-        defaultValue: 1
+        defaultValue: 1 // 1: confirmed 2: canceled
     }
 }, {
     timestamps: false,
     freezeTableName: true
 });
 
-GStores.sync({ alter: true })
+Ventes.sync({ alter: true })
     .then(() => {
-        console.log('=======> Cerated done `GStores` ');
+        console.log('=======> Cerated done `Ventes` ');
     })
     .catch((error) => {
         console.error('Une erreur s\'est produite lors de la création de la table :', error);
