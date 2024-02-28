@@ -30,7 +30,7 @@ export const Ventes = Configs.define('__tbl_ventes', {
     createdonunix: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        defaultValue: 0
+        defaultValue: nowInUnix({ options: {} })
     },
     createdon: {
         type: Sequelize.STRING,
