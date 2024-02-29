@@ -6,6 +6,11 @@ import { now } from '../helpers/helper.moment.js';
 dotenv.config()
 
 export const Produits = Configs.define('__tbl_produits', {
+    barcode: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+        defaultValue: process.env.APPESCAPESTRING
+    },
     uuid: {
         type: Sequelize.STRING,
         allowNull: true,
