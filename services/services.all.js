@@ -927,10 +927,9 @@ export const Services = {
                 }
             })
                 .then(role => {
-                    if (role instanceof Hasrole) {
-                        return cb(undefined, { code: 200, message: "Done", data: role.toJSON() })
-                    }
-                    else {
+                    if (role) {
+                        return cb(undefined, { code: 200, message: "Done", data: role })
+                    } else {
                         return cb(undefined, { code: 400, message: "Error unknown", data: role })
                     }
                 })

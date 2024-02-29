@@ -33,6 +33,7 @@ export const __controlerLaoratories = {
                 },
                 transaction: null,
                 cb: (err, done) => {
+                    console.log(done, err);
                     if (done) {
                         const { code, message, data } = done
                         if (code === 200) {

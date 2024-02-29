@@ -173,7 +173,8 @@ export const __controlerUsers = {
                                             phone: user && user['phone'],
                                             uuid: user && user['uuid'],
                                             roles,
-                                            __id: user && user['id']
+                                            __id: user && user['id'],
+                                            idguichet: user && user['idguichet']
                                         }
                                     }, (err, token) => {
                                         if (token) {
