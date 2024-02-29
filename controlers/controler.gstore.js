@@ -6,6 +6,7 @@ import { GStores } from "../models/model.guichetstores.js"
 import { Produits } from "../models/model.produits.js";
 import { Stores } from "../models/model.store.js";
 
+
 export const __controlerGstore = {
     bonentree: async (req, res, next) => {
         const { items, idguichet } = req.body;
@@ -128,9 +129,5 @@ export const __controlerGstore = {
         } catch (error) {
             return Response(res, 500, error)
         }
-    },
-
-    sale: async (req, res, next) => {
-
     }
 }

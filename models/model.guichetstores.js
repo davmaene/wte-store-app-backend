@@ -22,6 +22,11 @@ export const GStores = Configs.define('__tbl_gstores', {
         allowNull: false,
         defaultValue: now({ options: {} })
     },
+    updatedon: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        defaultValue: now({ options: {} })
+    },
     createdby: {
         type: Sequelize.INTEGER,
         allowNull: true,

@@ -8,6 +8,11 @@ dotenv.config()
 const { ESCAPESTRING } = process.env;
 
 export const Ventes = Configs.define('__tbl_ventes', {
+    uuid: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        defaultValue: ESCAPESTRING
+    },
     idproduit: {
         type: Sequelize.INTEGER,
         allowNull: false,
