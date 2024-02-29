@@ -1,6 +1,7 @@
 import { capitalizeWords } from "../helpers/helper.helper.js"
 import { Response } from "../helpers/helper.message.js"
 import { Guichets as Laboratories } from "../models/model.guichets.js"
+import { Services } from "../services/services.all.js"
 
 export const __controlerLaoratories = {
 
@@ -22,7 +23,31 @@ export const __controlerLaoratories = {
         }
     },
     addusertoguichet: async (req, res, next) => {
-        
+        const { iduser, idguichet } = req.body;
+        if (!iduser || !idguichet) return Response(res, 401, "This request must have at least !iduser || !idguichet")
+        try {
+            Services.addUserToGuichet({
+                input: {
+                    idguichet,
+                    iduser
+                },
+                transaction: null,
+                cb: (err, done) => {
+                    if (done) {
+                        const { code, message, data } = done
+                        if (code === 200) {
+                            return Response(res, 200, data)
+                        } else {
+                            return Response(res, 400, err)
+                        }
+                    } else {
+                        return Response(res, 500, err)
+                    }
+                }
+            })
+        } catch (error) {
+            return Response(res, 500, error)
+        }
     },
     add: async (req, res, next) => {
         const { guichet, description, adresse, idprovince, idterritoire, idresponsable, idvillage } = req.body;
