@@ -21,7 +21,7 @@ export const __controlerUsers = {
 
     signup: async (req, res, next) => {
 
-        const { nom, postnom, prenom, email, phone, adresse, idprovince, idterritoire, idvillage, idlabo, genre, password, avatar, idrole } = req.body;
+        const { nom, postnom, prenom, email, phone, adresse, idprovince, idterritoire, idvillage, idlabo, genre, password, avatar, idrole, idguichet } = req.body;
 
         const pwd = await hashPWD({ plaintext: password });
         const code_ = randomLongNumber({ length: 6 });
@@ -43,6 +43,7 @@ export const __controlerUsers = {
                 idvillage,
                 idlabo,
                 genre,
+                idguichet,
                 password: pwd,
                 verificationcode: code_
             }, { transaction })
