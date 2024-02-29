@@ -105,3 +105,12 @@ export const formatUserModel = ({ model }) => {
         roles: roles.map(r => r && r['id'])
     }
 };
+
+export const replacerProduit = ({ items, idproduit, item }) => {
+    const index = Array.from(items).findIndex(produit => produit['idproduit'] === idproduit);
+
+    if (index !== -1) {
+        items[index] = { ...items[index], ...item };
+    }
+    return items;
+}

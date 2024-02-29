@@ -9,7 +9,7 @@ const { ESCAPESTRING } = process.env;
 
 export const Ventes = Configs.define('__tbl_ventes', {
     idproduit: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
         allowNull: false,
     },
     prixvente: {
