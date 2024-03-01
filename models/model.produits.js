@@ -2,6 +2,7 @@ import Sequelize from 'sequelize';
 import { Configs } from '../configs/configs.js';
 import dotenv from "dotenv";
 import { now } from '../helpers/helper.moment.js';
+import { randomLongNumber } from '../helpers/helper.random.js';
 
 dotenv.config()
 
@@ -9,7 +10,7 @@ export const Produits = Configs.define('__tbl_produits', {
     barcode: {
         type: Sequelize.TEXT,
         allowNull: true,
-        defaultValue: process.env.APPESCAPESTRING
+        defaultValue: randomLongNumber({ length: 6 })
     },
     uuid: {
         type: Sequelize.STRING,
@@ -36,7 +37,7 @@ export const Produits = Configs.define('__tbl_produits', {
         allowNull: true,
         defaultValue: 0
     },
-    idsouscategory: {
+    idunity: {
         type: Sequelize.INTEGER,
         allowNull: true,
         defaultValue: 0

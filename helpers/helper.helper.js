@@ -61,6 +61,10 @@ export const unityMesure = [
     {
         id: 9,
         unity: "Boitte"
+    },
+    {
+        id: 10,
+        unity: "Paires"
     }
 ]
 
@@ -113,4 +117,13 @@ export const replacerProduit = ({ items, idproduit, item }) => {
         items[index] = { ...items[index], ...item };
     }
     return items;
+}
+
+export const findUnityMesure = ({ idunity }) => {
+    const items = unityMesure
+    let item = {};
+    const index = Array.from(items).findIndex(produit => produit['id'] === idunity);
+
+    if (index !== -1) item = items[index]
+    return item;
 }
