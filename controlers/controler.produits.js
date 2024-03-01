@@ -25,7 +25,7 @@ export const __controlerProduits = {
             })
                 .then(rows => {
                     if (rows instanceof Produits) {
-                        rows = [...rows].map(l => {
+                        rows = [rows].map(l => {
                             const { idunity } = l.toJSON()
                             return {
                                 ...l.toJSON(),
@@ -38,6 +38,9 @@ export const __controlerProduits = {
                     }
                 })
                 .catch((err) => {
+                    console.log('====================================');
+                    console.log(err);
+                    console.log('====================================');
                     return Response(res, 503, err)
                 })
         } catch (error) {
