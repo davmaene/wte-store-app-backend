@@ -5,6 +5,42 @@ import { Produits } from "../models/model.produits.js"
 import { v4 as uuidv4 } from 'uuid';
 
 export const __controlerProduits = {
+    getonbycode: async (req, res, next) => {
+        const { barcode } = req.params
+        try {
+            Categories.hasOne(Produits, { foreignKey: "idcategory" })
+            Produits.belongsTo(Categories, { foreignKey: "idcategory" })
+
+            Produits.findOne({
+                where: {
+                    barcode
+                },
+                // raw: true,
+                include: [
+                    {
+                        model: Categories,
+                        required: true,
+                        attributes: ['id', 'category']
+                    }
+                ]
+            })
+                .then(({ rows, count }) => {
+                    rows = rows.map(l => {
+                        const { idunity } = l.toJSON()
+                        return {
+                            ...l.toJSON(),
+                            __tbl_unities: findUnityMesure({ idunity })
+                        }
+                    })
+                    return Response(res, 200, { list: rows, length: count })
+                })
+                .catch((err) => {
+                    return Response(res, 503, err)
+                })
+        } catch (error) {
+            return Response(res, 500, error)
+        }
+    },
     list: async (req, res, next) => {
         try {
 
@@ -33,9 +69,6 @@ export const __controlerProduits = {
                     return Response(res, 200, { list: rows, length: count })
                 })
                 .catch((err) => {
-                    console.log('====================================');
-                    console.log(err);
-                    console.log('====================================');
                     return Response(res, 503, err)
                 })
         } catch (error) {
