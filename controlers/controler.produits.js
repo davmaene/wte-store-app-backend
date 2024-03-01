@@ -15,7 +15,6 @@ export const __controlerProduits = {
                 where: {
                     barcode
                 },
-                // raw: true,
                 include: [
                     {
                         model: Categories,
@@ -24,15 +23,19 @@ export const __controlerProduits = {
                     }
                 ]
             })
-                .then(({ rows, count }) => {
-                    rows = rows.map(l => {
-                        const { idunity } = l.toJSON()
-                        return {
-                            ...l.toJSON(),
-                            __tbl_unities: findUnityMesure({ idunity })
-                        }
-                    })
-                    return Response(res, 200, { list: rows, length: count })
+                .then(rows => {
+                    if (rows instanceof Produits) {
+                        rows = [...rows].map(l => {
+                            const { idunity } = l.toJSON()
+                            return {
+                                ...l.toJSON(),
+                                __tbl_unities: findUnityMesure({ idunity })
+                            }
+                        })
+                        return Response(res, 200, rows[0])
+                    } else {
+                        return Response(res, 404, rows)
+                    }
                 })
                 .catch((err) => {
                     return Response(res, 503, err)
