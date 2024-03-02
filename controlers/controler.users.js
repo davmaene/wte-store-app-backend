@@ -21,7 +21,7 @@ export const __controlerUsers = {
 
     signup: async (req, res, next) => {
 
-        const { nom, postnom, prenom, email, phone, adresse, idprovince, idterritoire, idvillage, idlabo, genre, password, avatar, idrole, idguichet } = req.body;
+        const { nom, postnom, prenom, email, phone, adresse, idprovince, idterritoire, idvillage, idlabo, genre, password, avatar, idrole, idguichet, isfromweb } = req.body;
 
         const pwd = await hashPWD({ plaintext: password });
         const code_ = randomLongNumber({ length: 6 });
@@ -234,6 +234,10 @@ export const __controlerUsers = {
             Villages.hasOne(Users, { foreignKey: "id" });
             Users.belongsTo(Villages, { foreignKey: "idvillage" });
 
+
+            Guichets.hasOne(Users, { foreignKey: "id" });
+            Users.belongsTo(Guichets, { foreignKey: "idguichet" });
+
             Users.findAndCountAll({
                 where: {
                     status: 1
@@ -246,6 +250,11 @@ export const __controlerUsers = {
                         model: Roles,
                         required: true,
                         attributes: ['id', 'role']
+                    },
+                    {
+                        model: Guichets,
+                        required: true,
+                        attributes: ['id', 'guichet', 'adresse']
                     },
                     {
                         model: Provinces,

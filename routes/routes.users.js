@@ -7,6 +7,7 @@ export const __routesUsers = express.Router()
 
 __routesUsers.post("/user/signin", onValidate(userModelOnSignin), limiterSignin, __controlerUsers.signin) //,
 __routesUsers.post("/user/signup", onValidate(userModelValidator), limiterSignup, __controlerUsers.signup)
+__routesUsers.post("/user/add", onValidate(userModelValidator), limiterSignup, __controlerUsers.signup)
 __routesUsers.post("/user/verify", onValidate(userModelOnVerification), limiterVerify, __controlerUsers.verify)
 __routesUsers.post("/user/resendcode", onValidate(userModelOnResendCode), limiterResend, __controlerUsers.resendcode)
 __routesUsers.put("/user/:id", limiterSignup, __controlerUsers.update)

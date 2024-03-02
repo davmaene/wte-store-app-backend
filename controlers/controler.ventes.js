@@ -93,6 +93,7 @@ export const __controlerVentes = {
     listall: async (req, res, next) => {
         try {
             Ventes.findAndCountAll({
+                order: [['id', 'DESC']],
                 where: {
                     status: 1
                 }
@@ -111,6 +112,7 @@ export const __controlerVentes = {
         const { idguichet } = req.params
         try {
             Ventes.findAndCountAll({
+                order: [['id', 'DESC']],
                 where: {
                     idguichet,
                     status: 1

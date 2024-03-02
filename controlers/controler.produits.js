@@ -38,9 +38,6 @@ export const __controlerProduits = {
                     }
                 })
                 .catch((err) => {
-                    console.log('====================================');
-                    console.log(err);
-                    console.log('====================================');
                     return Response(res, 503, err)
                 })
         } catch (error) {
