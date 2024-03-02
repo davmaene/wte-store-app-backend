@@ -1,4 +1,5 @@
 import { Configs } from "../configs/configs.js"
+import { findUnityMesure } from "../helpers/helper.helper.js"
 import { Response } from "../helpers/helper.message.js"
 import { now } from "../helpers/helper.moment.js"
 import { randomLongNumber } from "../helpers/helper.random.js"
@@ -57,8 +58,38 @@ export const __controlerStore = {
             return Response(res, 500, error)
         }
     },
-
-    bonsortie: async (req, res, next) => {
-
+    getlateststore: async (req, res, next) => {
+        try {
+            Stores.findOne({
+                where: {},
+                order: [['id', 'DESC']],
+                limit: 1
+            })
+                .then(async store => {
+                    const { items } = store.toJSON();
+                    const __ = []
+                    for (let index = 0; index < items.length; index++) {
+                        const { idproduit, idunity } = items[index];
+                        const prd = await Produits.findOne({
+                            where: {
+                                id: idproduit
+                            }
+                        })
+                        if (prd instanceof Produits) __.push({
+                            ...items[index],
+                            produit: prd.toJSON(),
+                            __tbl_unity: findUnityMesure({ idunity })
+                        })
+                    }
+                    delete store['items'];
+                    store['items'] = __
+                    return Response(res, 200, store)
+                })
+                .catch(err => {
+                    return Response(res, 500, err)
+                })
+        } catch (error) {
+            return Response(res, 500, error)
+        }
     }
 }
