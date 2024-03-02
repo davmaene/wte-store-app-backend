@@ -13,7 +13,7 @@ export const nowPlusDays = ({ options: { days } }) => {
 
 export const nowInUnix = ({ options }) => {
     options = options ? options : {}
-    return moment().unix();
+    return moment().endOf('day').unix();
 };
 
 export const daysPerTypeSouscription = ({ type }) => {
