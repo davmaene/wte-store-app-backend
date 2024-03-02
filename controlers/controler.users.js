@@ -45,6 +45,7 @@ export const __controlerUsers = {
                 genre,
                 idguichet,
                 password: pwd,
+                isvalidated: 1,
                 verificationcode: code_
             }, { transaction })
                 .then(user => {
@@ -69,10 +70,10 @@ export const __controlerUsers = {
                                 if (done) {
                                     const { code } = done;
                                     if (code === 200) {
-
+                                        // WTE-${code_} \nBonjour ${capitalizeWords({ text: nom })} votre compte a été crée avec succès. Ceci est votre code de vérification
                                         Services.onSendSMS({
                                             to: fillphone({ phone }),
-                                            content: `WTE-${code_} \nBonjour ${capitalizeWords({ text: nom })} votre compte a été crée avec succès. Ceci est votre code de vérification`,
+                                            content: `Bonjour ${capitalizeWords({ text: nom })}, compte crée avec succès; votre mot de passe est ${password}`,
                                             cb: (err, done) => { }
                                         });
 
