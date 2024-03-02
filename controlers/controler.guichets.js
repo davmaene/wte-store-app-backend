@@ -1,16 +1,42 @@
 import { capitalizeWords } from "../helpers/helper.helper.js"
 import { Response } from "../helpers/helper.message.js"
 import { Guichets as Laboratories } from "../models/model.guichets.js"
+import { Provinces } from "../models/model.provinces.js"
+import { Territoires } from "../models/model.territoirs.js"
+import { Users } from "../models/model.users.js"
 import { Services } from "../services/services.all.js"
 
 export const __controlerLaoratories = {
 
     list: async (req, res, next) => {
         try {
+            Users.hasOne(Laboratories, { foreignKey: "id" });
+            Laboratories.belongsTo(Users, { foreignKey: "idresponsable" });
+
+            Provinces.hasOne(Laboratories, { foreignKey: "id" });
+            Laboratories.belongsTo(Provinces, { foreignKey: "idprovince" });
+
+            Territoires.hasOne(Laboratories, { foreignKey: "id" });
+            Laboratories.belongsTo(Territoires, { foreignKey: "idterritoire" });
+
             Laboratories.findAndCountAll({
                 where: {
                     status: 1
-                }
+                },
+                include: [
+                    {
+                        model: Users,
+                        required: true
+                    },
+                    {
+                        model: Provinces,
+                        required: true
+                    },
+                    {
+                        model: Territoires,
+                        required: true
+                    }
+                ]
             })
                 .then(({ rows, count }) => {
                     return Response(res, 200, { length: count, list: rows })

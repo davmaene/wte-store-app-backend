@@ -2,8 +2,10 @@ import { Configs } from "../configs/configs.js";
 import { replacerProduit } from "../helpers/helper.helper.js";
 import { Response } from "../helpers/helper.message.js"
 import { now } from "../helpers/helper.moment.js";
+import { Guichets } from "../models/model.guichets.js";
 import { GStores } from "../models/model.guichetstores.js";
 import { Produits } from "../models/model.produits.js";
+import { Users } from "../models/model.users.js";
 import { Ventes } from "../models/model.ventes.js";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -92,11 +94,36 @@ export const __controlerVentes = {
     },
     listall: async (req, res, next) => {
         try {
+
+            Users.hasOne(Users, { foreignKey: "id" });
+            Ventes.belongsTo(Users, { foreignKey: "createdby" });
+
+            Produits.hasOne(Ventes, { foreignKey: "id" });
+            Ventes.belongsTo(Produits, { foreignKey: "idproduit" });
+
+            Guichets.hasOne(Ventes, { foreignKey: "id" });
+            Ventes.belongsTo(Guichets, { foreignKey: "idguichet" });
+
             Ventes.findAndCountAll({
                 order: [['id', 'DESC']],
                 where: {
                     status: 1
-                }
+                },
+                include: [
+                    {
+                        model: Users,
+                        required: true,
+                        attributes: ['id', 'nom', 'postnom', 'prenom', 'phone']
+                    },
+                    {
+                        model: Produits,
+                        required: true
+                    },
+                    {
+                        model: Guichets,
+                        required: true
+                    }
+                ]
             })
                 .then(({ rows, count }) => {
                     return Response(res, 200, { list: rows, length: count })
