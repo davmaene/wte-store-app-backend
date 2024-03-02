@@ -73,11 +73,12 @@ export const __controlerStore = {
                         const prd = await Produits.findOne({
                             where: {
                                 id: idproduit
-                            }
+                            },
+                            attributes: ['id', 'barcode', 'produit', 'currency', 'prix']
                         })
                         if (prd instanceof Produits) __.push({
                             ...items[index],
-                            produit: prd.toJSON(),
+                            __tbl_produit: prd.toJSON(),
                             __tbl_unity: findUnityMesure({ idunity })
                         })
                     }
@@ -87,6 +88,23 @@ export const __controlerStore = {
                 })
                 .catch(err => {
                     return Response(res, 500, err)
+                })
+        } catch (error) {
+            return Response(res, 500, error)
+        }
+    },
+    list: async (req, res, next) => {
+        try {
+            Stores.findAndCountAll({
+                where: {
+
+                }
+            })
+                .then(({ rows, count }) => {
+                    return Response(res, 200, { length: count, list: rows })
+                })
+                .catch(err => {
+                    return Response(res, 503, err)
                 })
         } catch (error) {
             return Response(res, 500, error)
