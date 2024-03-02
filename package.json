@@ -7,15 +7,15 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "test": "nothin"
+    "test": "nothing"
   },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/davmaene/mukulima-backend.git"
   },
   "keywords": [
-    "AgriTech",
-    "Mukilma"
+    "Stock",
+    "Stock App"
   ],
   "author": "davmaene",
   "license": "ISC",
