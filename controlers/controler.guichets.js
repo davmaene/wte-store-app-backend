@@ -99,5 +99,8 @@ export const __controlerLaoratories = {
             console.log(error);
             return Response(res, 500, error)
         }
+    },
+    getonbyid: async (req, res, next) => {
+        
     }
 }
