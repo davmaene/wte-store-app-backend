@@ -3,8 +3,10 @@ import { findUnityMesure } from "../helpers/helper.helper.js"
 import { Response } from "../helpers/helper.message.js"
 import { now } from "../helpers/helper.moment.js"
 import { randomLongNumber } from "../helpers/helper.random.js"
+import { Categories } from "../models/model.categories.js"
 import { Produits } from "../models/model.produits.js"
 import { Stores } from "../models/model.store.js"
+import { Users } from "../models/model.users.js"
 
 export const __controlerStore = {
     bonentree: async (req, res, next) => {
@@ -93,12 +95,72 @@ export const __controlerStore = {
             return Response(res, 500, error)
         }
     },
+    getbyid: async (req, res, next) => {
+        const { idapprovionement } = req.params;
+        if (!idapprovionement) return Response(res, 401, "This request must have at least idapprovionement !")
+        try {
+            Stores.belongsTo(Users, { foreignKey: "createdby" })
+            Stores.findOne({
+                include: [
+                    {
+                        model: Users,
+                        required: true,
+                        attributes: ['id', 'nom', 'postnom', 'prenom', 'phone']
+                    }
+                ],
+                where: {
+                    id: parseInt(idapprovionement)
+                },
+            })
+                .then(async store => {
+                    const { items } = store.toJSON();
+                    const __ = []
+                    for (let index = 0; index < items.length; index++) {
+                        const { idproduit, idunity } = items[index];
+                        const prd = await Produits.findOne({
+                            where: {
+                                id: idproduit
+                            },
+                            attributes: ['id', 'barcode', 'produit', 'currency', 'prix', 'idcategory']
+                        })
+                        if (prd instanceof Produits) {
+                            const { idcategory } = prd.toJSON()
+                            const categ = await Categories.findOne({
+                                where: {
+                                    id: idcategory
+                                }
+                            })
+                            __.push({
+                                ...items[index],
+                                __tbl_category: categ.toJSON(),
+                                __tbl_produit: prd.toJSON(),
+                                __tbl_unities: findUnityMesure({ idunity })
+                            })
+                        }
+                    }
+                    delete store['items'];
+                    store['items'] = __
+                    return Response(res, 200, store)
+                })
+                .catch(err => {
+                    return Response(res, 503, err)
+                })
+        } catch (error) {
+            return Response(res, 500, error)
+        }
+    },
     list: async (req, res, next) => {
         try {
+            Stores.belongsTo(Users, { foreignKey: 'createdby' })
             Stores.findAndCountAll({
-                where: {
-
-                }
+                where: {},
+                include: [
+                    {
+                        model: Users,
+                        required: true,
+                        attributes: ['id', 'nom', 'postnom', 'prenom', 'email', 'phone']
+                    }
+                ]
             })
                 .then(({ rows, count }) => {
                     return Response(res, 200, { length: count, list: rows })
