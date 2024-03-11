@@ -509,6 +509,77 @@ export const __controlerUsers = {
         }
     },
 
+    updatepassword: async (req, res, next) => {
+        const { id } = req.params
+        const { newpassword } = req.body;
+        if (!id) return Response(res, 401, "This request must have at least uuid || id")
+        try {
+
+            Users.belongsToMany(Roles, { through: Hasrole, attributes: ['id'] });
+            Roles.belongsToMany(Users, { through: Hasrole, attributes: ['id'] });
+
+            Provinces.hasOne(Users, { foreignKey: "id" });
+            Users.belongsTo(Provinces, { foreignKey: "idprovince" });
+
+            Territoires.hasOne(Users, { foreignKey: "id" });
+            Users.belongsTo(Territoires, { foreignKey: "idterritoire" });
+
+            Villages.hasOne(Users, { foreignKey: "id" });
+            Users.belongsTo(Villages, { foreignKey: "idvillage" });
+
+            const pwd = await hashPWD({ plaintext: newpassword });
+
+            Users.findOne({
+                include: [
+                    {
+                        model: Roles,
+                        required: true,
+                        attributes: ['id', 'role']
+                    },
+                    {
+                        model: Provinces,
+                        required: true,
+                        attributes: ['id', 'province']
+                    },
+                    {
+                        model: Territoires,
+                        required: true,
+                        attributes: ['id', 'territoire']
+                    },
+                    {
+                        model: Villages,
+                        required: false,
+                        attributes: ['id', 'territoire']
+                    }
+                ],
+                where: {
+                    [Op.or]: [
+                        { id },
+                        { uuid: id }
+                    ]
+                }
+            })
+                .then(us => {
+                    if (us instanceof Users) {
+                        us.update({
+                            password: pwd
+                        })
+                            .then(Us => {
+                                us = us.toJSON()
+                                return Response(res, 200, { ...formatUserModel({ model: us }) })
+                            })
+                            .catch(err => {
+                                return Response(res, 503, err)
+                            })
+                    } else {
+                        return Response(res, 404, "user not found on this server !")
+                    }
+                })
+        } catch (error) {
+            return Response(res, 500, error)
+        }
+    },
+
     delete: async (req, res, next) => {
         const { id } = req.params;
         try {

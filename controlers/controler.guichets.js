@@ -155,7 +155,7 @@ export const __controlerLaoratories = {
                                             where: {
                                                 id: parseInt(idproduit),
                                             },
-                                            attributes: ['id', 'prix', 'produit', 'currency', 'description', 'uuid', 'idcategory', 'idunity']
+                                            attributes: ['id', 'prix', 'produit', 'currency', 'description', 'uuid', 'idcategory', 'idunity', 'barcode']
                                         })
                                         if (prd instanceof Produits) {
                                             prd = prd.toJSON()
@@ -166,7 +166,7 @@ export const __controlerLaoratories = {
                                                     id: parseInt(idcategory)
                                                 }
                                             });
-                                            
+
                                             produits.push({
                                                 ...prd,
                                                 qte,
