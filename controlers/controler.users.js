@@ -513,7 +513,7 @@ export const __controlerUsers = {
         const { iduser } = req.params
         const { newpassword } = req.body;
         if (!iduser) return Response(res, 401, "This request must have at least uuid || id")
-        if(!newpassword) return Response(res, 401, "This request must have at least newpassword as paramter !")
+        if (!newpassword) return Response(res, 401, "This request must have at least newpassword as paramter !")
         try {
             Users.belongsToMany(Roles, { through: Hasrole, attributes: ['id'] });
             Roles.belongsToMany(Users, { through: Hasrole, attributes: ['id'] });
@@ -566,6 +566,12 @@ export const __controlerUsers = {
                         })
                             .then(Us => {
                                 us = us.toJSON()
+                                const { phone, email, nom, postnom } = us
+                                Services.onSendSMS({
+                                    to: fillphone({ phone }),
+                                    content: `Bonjour ${nom}, votre mot de passe vient d'etre changé en ${newpassword}`,
+                                    cb: (er, dn) => {}
+                                })
                                 return Response(res, 200, { ...formatUserModel({ model: us }) })
                             })
                             .catch(err => {
