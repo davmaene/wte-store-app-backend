@@ -1,5 +1,6 @@
-import { capitalizeWords } from "../helpers/helper.helper.js"
+import { capitalizeWords, findUnityMesure } from "../helpers/helper.helper.js"
 import { Response } from "../helpers/helper.message.js"
+import { Categories } from "../models/model.categories.js"
 import { Guichets as Laboratories } from "../models/model.guichets.js"
 import { GStores } from "../models/model.guichetstores.js"
 import { Produits } from "../models/model.produits.js"
@@ -154,11 +155,24 @@ export const __controlerLaoratories = {
                                             where: {
                                                 id: parseInt(idproduit),
                                             },
-                                            attributes: ['id', 'prix', 'produit', 'currency', 'description', 'uuid']
+                                            attributes: ['id', 'prix', 'produit', 'currency', 'description', 'uuid', 'idcategory', 'idunity']
                                         })
                                         if (prd instanceof Produits) {
                                             prd = prd.toJSON()
-                                            produits.push({ ...prd, qte });
+                                            const { idcategory, idunity } = prd;
+
+                                            const categ = await Categories.findOne({
+                                                where: {
+                                                    id: parseInt(idcategory)
+                                                }
+                                            });
+                                            
+                                            produits.push({
+                                                ...prd,
+                                                qte,
+                                                __tbl_category: categ ? categ.toJSON() : null,
+                                                __tbl_unities: findUnityMesure({ idunity })
+                                            });
                                         }
                                     }
                                     st = st.toJSON()

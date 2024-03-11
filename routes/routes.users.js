@@ -11,5 +11,6 @@ __routesUsers.post("/user/add", onValidate(userModelValidator), limiterSignup, _
 __routesUsers.post("/user/verify", onValidate(userModelOnVerification), limiterVerify, __controlerUsers.verify)
 __routesUsers.post("/user/resendcode", onValidate(userModelOnResendCode), limiterResend, __controlerUsers.resendcode)
 __routesUsers.put("/user/:id", limiterSignup, __controlerUsers.update)
+__routesUsers.delete("/user/:id", limiterSignup, __controlerUsers.delete)
 __routesUsers.get("/list", __controlerUsers.list)
 __routesUsers.post("/user/addrole", __controlerUsers.addroletouser)
