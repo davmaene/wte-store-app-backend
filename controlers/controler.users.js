@@ -455,12 +455,12 @@ export const __controlerUsers = {
                     },
                     {
                         model: Provinces,
-                        required: true,
+                        required: false,
                         attributes: ['id', 'province']
                     },
                     {
                         model: Territoires,
-                        required: true,
+                        required: false,
                         attributes: ['id', 'territoire']
                     },
                     {
@@ -510,11 +510,11 @@ export const __controlerUsers = {
     },
 
     updatepassword: async (req, res, next) => {
-        const { id } = req.params
+        const { iduser } = req.params
         const { newpassword } = req.body;
-        if (!id) return Response(res, 401, "This request must have at least uuid || id")
+        if (!iduser) return Response(res, 401, "This request must have at least uuid || id")
+        if(!newpassword) return Response(res, 401, "This request must have at least newpassword as paramter !")
         try {
-
             Users.belongsToMany(Roles, { through: Hasrole, attributes: ['id'] });
             Roles.belongsToMany(Users, { through: Hasrole, attributes: ['id'] });
 
@@ -538,12 +538,12 @@ export const __controlerUsers = {
                     },
                     {
                         model: Provinces,
-                        required: true,
+                        required: false,
                         attributes: ['id', 'province']
                     },
                     {
                         model: Territoires,
-                        required: true,
+                        required: false,
                         attributes: ['id', 'territoire']
                     },
                     {
@@ -554,8 +554,8 @@ export const __controlerUsers = {
                 ],
                 where: {
                     [Op.or]: [
-                        { id },
-                        { uuid: id }
+                        { id: iduser },
+                        { uuid: iduser }
                     ]
                 }
             })
@@ -576,6 +576,9 @@ export const __controlerUsers = {
                     }
                 })
         } catch (error) {
+            console.log('====================================');
+            console.log(error);
+            console.log('====================================');
             return Response(res, 500, error)
         }
     },
