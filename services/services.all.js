@@ -17,13 +17,13 @@ const { SENDERNAMESMSAPI, TOKENSMSAPI, SMSURLPROVIDER } = process.env;
 export const Services = {
 
     onSendSMS: async ({ cb, to, content }) => {
-
-        let data = JSON.stringify({
+        // JSON.stringify()
+        let data = {
             "to": completeCodeCountryToPhoneNumber({ phone: to }),
             "message": content,
             "from": SENDERNAMESMSAPI,
             "token": TOKENSMSAPI
-        });
+        };
 
         const config = {
             method: 'post',
