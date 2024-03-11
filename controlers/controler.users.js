@@ -582,9 +582,6 @@ export const __controlerUsers = {
                     }
                 })
         } catch (error) {
-            console.log('====================================');
-            console.log(error);
-            console.log('====================================');
             return Response(res, 500, error)
         }
     },
