@@ -167,7 +167,8 @@ export const __controlerProduits = {
                 idcategory: parseInt(idcategory),
                 prix: parseFloat(prix),
                 currency: String(currency).toUpperCase(),
-                description
+                description,
+                ...req.body,
             }, {
                 where: {
                     id: idproduit
