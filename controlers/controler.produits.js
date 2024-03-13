@@ -90,6 +90,7 @@ export const __controlerProduits = {
             description,
             niveaudalert
         } = req.body;
+
         if (!produit || !idcategory || !prix || !currency || !idunity || !niveaudalert) return Response(res, 401, "This request must have at least !produit || !idcategory || !prix || !currency || !description || !idunity || !niveaudalert")
         if (!req.files) return Response(res, 401, "This request must have at least image in body !")
         try {

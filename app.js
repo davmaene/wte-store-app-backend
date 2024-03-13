@@ -73,6 +73,8 @@ __app.use("/api", accessValidator, Routes);
 
 __app.use("/guard/g/api", Routes);
 
+__app.use("/assets", Routes);
+
 __app.use(accessValidator, (req, res, next) => {
     return Response(res, 404, {
         message: "Ressource not found on this server !",
