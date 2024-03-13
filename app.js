@@ -6,7 +6,6 @@ import uploader from 'express-fileupload';
 import cookieParser from 'cookie-parser';
 import { Response } from './helpers/helper.message.js';
 import { Routes } from './routes/index.js';
-import { Middleware } from './middleware/ware.cookies.js';
 import { accessValidator } from './middleware/ware.ufw.js';
 
 dotenv.config();

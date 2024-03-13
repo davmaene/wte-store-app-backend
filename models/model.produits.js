@@ -35,7 +35,7 @@ export const Produits = Configs.define('__tbl_produits', {
     image: {
         type: Sequelize.STRING,
         allowNull: true,
-        defaultValue: process.env.APPESCAPESTRING
+        defaultValue: 'assets/as_products/image-TG4ujwM66CEWLBqWmEQ5qDCwYrxiHIYd.png'
     },
     produit: {
         type: Sequelize.STRING,

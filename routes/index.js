@@ -12,6 +12,7 @@ import { __routesUnities } from './routes.unities.js';
 import { __routesProduits } from './routes.produits.js';
 import { __routesStores } from './routes.store.js';
 import { __routesVentes } from './routes.ventes.js';
+import { __routesAssets } from './routes.assets.js';
 
 export const Routes = express.Router();
 
@@ -28,3 +29,5 @@ Routes.use('/unities', __routesUnities)
 Routes.use('/produits', __routesProduits)
 Routes.use('/stores', __routesStores)
 Routes.use('/ventes', __routesVentes)
+Routes.use("/", __routesAssets)
+

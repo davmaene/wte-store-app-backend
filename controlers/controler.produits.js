@@ -87,10 +87,11 @@ export const __controlerProduits = {
             idcategory,
             prix,
             currency,
-            description
+            description,
+            niveaudalert
         } = req.body;
-        if (!produit || !idcategory || !prix || !currency || !idunity) return Response(res, 401, "This request must have at least !produit || !idcategory || !prix || !currency || !description || !idunity")
-        if(!req.files) return Response(res, 401, "This request must have at least image in body !")
+        if (!produit || !idcategory || !prix || !currency || !idunity || !niveaudalert) return Response(res, 401, "This request must have at least !produit || !idcategory || !prix || !currency || !description || !idunity || !niveaudalert")
+        if (!req.files) return Response(res, 401, "This request must have at least image in body !")
         try {
             const hasbarcode = barcode ? 1 : 0
             ServiceImage.onUploadImage({
