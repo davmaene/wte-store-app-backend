@@ -12,6 +12,7 @@ export const __controlerStore = {
         const trans = randomLongNumber({ length: 16 })
         const { items } = req.body
         const { phone: asphone, uuid, roles, __id, iat, exp, jti } = req.currentuser;
+        
         if (!Array.isArray(items)) return Response(res, 401, "Items must be a type of array !")
 
         try {

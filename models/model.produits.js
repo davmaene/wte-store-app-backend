@@ -27,6 +27,11 @@ export const Produits = Configs.define('__tbl_produits', {
         allowNull: true,
         defaultValue: 0
     },
+    niveaudalert: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        defaultValue: 0
+    },
     image: {
         type: Sequelize.STRING,
         allowNull: true,
