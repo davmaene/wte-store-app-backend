@@ -10,7 +10,7 @@ export const Produits = Configs.define('__tbl_produits', {
     barcode: {
         type: Sequelize.TEXT,
         allowNull: true,
-        defaultValue: randomLongNumber({ length: 6 })
+        defaultValue: randomLongNumber({ length: 8 })
     },
     hasbarcode: {
         type: Sequelize.TEXT,
