@@ -1,6 +1,6 @@
 {
   "name": "store-app-backend",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "type": "module",
   "description": "App de collection des applications toutes de mukulima app",
   "main": "app.js",
