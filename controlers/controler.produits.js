@@ -3,6 +3,7 @@ import { Response } from "../helpers/helper.message.js"
 import { Categories } from "../models/model.categories.js";
 import { Produits } from "../models/model.produits.js"
 import { v4 as uuidv4 } from 'uuid';
+import { ServiceImage } from "../services/services.images.js";
 
 export const __controlerProduits = {
     getonbycode: async (req, res, next) => {
@@ -92,27 +93,54 @@ export const __controlerProduits = {
             return Response(res, 401, "This request must have at least !produit || !idcategory || !prix || !currency || !description || !idunity")
         try {
             const hasbarcode = barcode ? 1 : 0
-            Produits.create({
-                hasbarcode,
-                idunity,
-                barcode,
-                uuid: uuidv4(),
-                produit: capitalizeWords({ text: produit }),
-                idcategory: parseInt(idcategory),
-                prix: parseFloat(prix),
-                currency: String(currency).toUpperCase(),
-                description
-            })
-                .then(prd => {
-                    if (prd instanceof Produits) {
-                        return Response(res, 200, prd)
-                    } else {
-                        return Response(res, 503, prd)
+            ServiceImage.onUploadImage({
+                inputs: {
+                    file: req,
+                    type: 'image'
+                },
+                callBack: (err, done) => {
+                    if (done) {
+                        const { code, message, data } = done;
+                        ServiceImage.onRemoveBGFromImage({
+                            inputs: {
+                                ...data,
+                                directory: 'as_products'
+                            },
+                            callBack: (er, success) => {
+                                if (success) {
+                                    const { code, message, data } = success;
+                                    if (code === 200) {
+                                        const { filename, path } = data
+                                        Produits.create({
+                                            image: path,
+                                            hasbarcode,
+                                            idunity,
+                                            barcode,
+                                            uuid: uuidv4(),
+                                            produit: capitalizeWords({ text: produit }),
+                                            idcategory: parseInt(idcategory),
+                                            prix: parseFloat(prix),
+                                            currency: String(currency).toUpperCase(),
+                                            description
+                                        })
+                                            .then(prd => {
+                                                if (prd instanceof Produits) {
+                                                    return Response(res, 200, prd)
+                                                } else {
+                                                    return Response(res, 503, prd)
+                                                }
+                                            })
+                                            .catch(er => {
+                                                return Response(res, 503, er)
+                                            })
+                                    }
+                                }
+                            }
+                        })
                     }
-                })
-                .catch(er => {
-                    return Response(res, 503, er)
-                })
+                }
+            })
+
         } catch (error) {
             return Response(res, 500, error)
         }

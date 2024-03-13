@@ -6,7 +6,6 @@ import { GStores } from "../models/model.guichetstores.js"
 import { Produits } from "../models/model.produits.js";
 import { Stores } from "../models/model.store.js";
 
-
 export const __controlerGstore = {
     bonentree: async (req, res, next) => {
         const { items, idguichet } = req.body;
@@ -26,25 +25,24 @@ export const __controlerGstore = {
                 const notapprouvedItems = [];
 
                 for (let index = 0; index < items.length; index++) {
-                    const { idproduit, qte } = items[index];
+                    const { idproduit, qte: qtecommander } = items[index];
                     const prd = await Produits.findOne({
                         where: {
                             id: parseInt(idproduit)
                         }
                     })
                     if (prd instanceof Produits) {
-                        const { prix, qte: asqte } = prd;
-                        if (asqte >= qte) {
+                        const { prix, qte: qtedisponible } = prd;
+                        if (parseInt(qtecommander) <= parseInt(qtedisponible)) {
                             prd.update({
-                                qte: parseInt(asqte) - parseInt(qte),
+                                qte: parseInt(qtedisponible) - parseInt(qtecommander),
                                 updatedon: now({ options: {} }),
                             })
                             newItesms.push({
                                 idproduit,
                                 prix: parseFloat(prix),
-                                qte
+                                qte: qtecommander
                             })
-                            approuvedItems.push(items[index])
                         } else {
                             notapprouvedItems.push(items[index])
                         }
@@ -54,22 +52,49 @@ export const __controlerGstore = {
                 }
 
                 if (newItesms.length > 0) {
-                    await GStores.create({
-                        idguichet: parseInt(idguichet),
-                        transaction: trans,
-                        items: newItesms,
-                        createdby: __id
+
+                    GStores.findOne({
+                        where: {
+                            idguichet: parseInt(idguichet)
+                        }
+                    }).then(gstore => {
+                        if (gstore instanceof GStores) {
+                            console.log("The store found ==> ", gstore.toJSON());
+                            const { items } = gstore.toJSON()
+                            gstore.update({
+                                updatedon: now({ options: {} }),
+                                items: [
+                                    ...items,
+                                    ...newItesms
+                                ]
+                            })
+                                .then(U => {
+                                    return Response(res, 200, { transaction: trans, length: newItesms.length, items: newItesms })
+                                })
+                                .catch(E => {
+                                    return Response(res, 400, E)
+                                })
+                        } else {
+                            console.log("The store not found ==> ", idguichet);
+                            GStores.create({
+                                idguichet: parseInt(idguichet),
+                                transaction: trans,
+                                items: newItesms,
+                                createdby: __id
+                            })
+                                .then(str => {
+                                    if (str instanceof GStores) {
+                                        return Response(res, 200, { transaction: trans, length: newItesms.length, items: newItesms })
+                                    } else {
+                                        return Response(res, 400, str)
+                                    }
+                                })
+                                .catch(err => {
+                                    return Response(res, 503, err)
+                                })
+                        }
                     })
-                        .then(str => {
-                            if (str instanceof GStores) {
-                                return Response(res, 200, { transaction: trans, length: newItesms.length, items: newItesms })
-                            } else {
-                                return Response(res, 400, str)
-                            }
-                        })
-                        .catch(err => {
-                            return Response(res, 503, err)
-                        })
+
                 } else {
                     return Response(res, 400, "The principal store is empty ! so we can not process with the request ")
                 }
@@ -77,6 +102,7 @@ export const __controlerGstore = {
                 return Response(res, 400, "The principal store is empty ! so we can not process with the request ")
             }
         } catch (error) {
+            console.log(error);
             return Response(res, 500, error)
         }
     },
