@@ -17,14 +17,14 @@ export const __controlerStore = {
         try {
             const newItesms = []
             for (let index = 0; index < items.length; index++) {
-                const { idproduit, idunity, qte, prixachat, prixunitaire, fournisseur } = items[index];
+                const { idproduit, qte, prixachat, prixunitaire, fournisseur } = items[index];
                 const prd = await Produits.findOne({
                     where: {
                         id: parseInt(idproduit)
                     }
                 })
                 if (prd instanceof Produits) {
-                    const { prix, qte: asqte } = prd;
+                    const { prix, qte: asqte, idunity } = prd;
                     prd.update({
                         qte: parseInt(asqte) + parseInt(qte),
                         updatedon: now({ options: {} }),
