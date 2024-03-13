@@ -12,7 +12,11 @@ export const __controlerStore = {
         const trans = randomLongNumber({ length: 16 })
         const { items } = req.body
         const { phone: asphone, uuid, roles, __id, iat, exp, jti } = req.currentuser;
-        
+
+        console.log('====================================');
+        console.log(req.body);
+        console.log('====================================');
+
         if (!Array.isArray(items)) return Response(res, 401, "Items must be a type of array !")
         try {
             const newItesms = []
@@ -42,7 +46,7 @@ export const __controlerStore = {
             }
             Stores.create({
                 transaction: trans,
-                items: newItesms,
+                items: [...newItesms],
                 createdby: __id
             })
                 .then(str => {
@@ -112,34 +116,39 @@ export const __controlerStore = {
                 },
             })
                 .then(async store => {
-                    const { items } = store.toJSON();
-                    const __ = []
-                    for (let index = 0; index < items.length; index++) {
-                        const { idproduit, idunity } = items[index];
-                        const prd = await Produits.findOne({
-                            where: {
-                                id: idproduit
-                            },
-                            attributes: ['id', 'barcode', 'produit', 'currency', 'prix', 'idcategory']
-                        })
-                        if (prd instanceof Produits) {
-                            const { idcategory } = prd.toJSON()
-                            const categ = await Categories.findOne({
+                    if (store instanceof Stores) {
+                        let { items } = store.toJSON();
+                        items = Array.isArray(items) ? [...items] : JSON.parse(items)
+                        const __ = []
+                        for (let index = 0; index < items.length; index++) {
+                            const { idproduit, idunity } = items[index];
+                            const prd = await Produits.findOne({
                                 where: {
-                                    id: idcategory
-                                }
+                                    id: idproduit
+                                },
+                                attributes: ['id', 'barcode', 'produit', 'currency', 'prix', 'idcategory']
                             })
-                            __.push({
-                                ...items[index],
-                                __tbl_category: categ.toJSON(),
-                                __tbl_produit: prd.toJSON(),
-                                __tbl_unities: findUnityMesure({ idunity })
-                            })
+                            if (prd instanceof Produits) {
+                                const { idcategory } = prd.toJSON()
+                                const categ = await Categories.findOne({
+                                    where: {
+                                        id: idcategory
+                                    }
+                                })
+                                __.push({
+                                    ...items[index],
+                                    __tbl_category: categ.toJSON(),
+                                    __tbl_produit: prd.toJSON(),
+                                    __tbl_unities: findUnityMesure({ idunity })
+                                })
+                            }
                         }
+                        delete store['items'];
+                        store['items'] = __
+                        return Response(res, 200, store)
+                    } else {
+                        return Response(res, 200, {})
                     }
-                    delete store['items'];
-                    store['items'] = __
-                    return Response(res, 200, store)
                 })
                 .catch(err => {
                     return Response(res, 503, err)

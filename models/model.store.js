@@ -15,7 +15,7 @@ export const Stores = Configs.define('__tbl_stores', {
     items: {
         type: Sequelize.JSON,
         allowNull: false,
-        defaultValue: ESCAPESTRING
+        defaultValue: []
     },
     createdon: {
         type: Sequelize.STRING,

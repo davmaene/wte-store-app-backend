@@ -147,7 +147,8 @@ export const __controlerLaoratories = {
                         })
                             .then(async st => {
                                 if (st instanceof GStores) {
-                                    const { items } = st;
+                                    let { items } = st.toJSON();
+                                    items = Array.isArray(items) ? [...items] : JSON.parse(items)
                                     const produits = []
                                     for (let index = 0; index < items.length; index++) {
                                         const { idproduit, qte } = items[index];
@@ -180,7 +181,7 @@ export const __controlerLaoratories = {
                                     delete st['items']
                                     return Response(res, 200, { ...guichet, __tbl_gstore: st, __tbl_produits: produits })
                                 } else {
-                                    return Response(res, 400, st)
+                                    return Response(res, 200, { __tbl_gstore: {}, __tbl_produits: [] })
                                 }
                             })
                             .catch(er => {
@@ -191,6 +192,9 @@ export const __controlerLaoratories = {
                     }
                 })
                 .catch(err => {
+                    console.log('====================================');
+                    console.log("Two ==> ", err);
+                    console.log('====================================');
                     return Response(res, 503, err)
                 })
         } catch (error) {

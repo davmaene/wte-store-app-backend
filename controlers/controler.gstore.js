@@ -59,8 +59,9 @@ export const __controlerGstore = {
                         }
                     }).then(gstore => {
                         if (gstore instanceof GStores) {
-                            console.log("The store found ==> ", gstore.toJSON());
-                            const { items } = gstore.toJSON()
+                            let { items } = gstore.toJSON()
+                            items = Array.isArray(items) ? [...items] : JSON.parse(items)
+
                             gstore.update({
                                 updatedon: now({ options: {} }),
                                 items: [
@@ -75,7 +76,6 @@ export const __controlerGstore = {
                                     return Response(res, 400, E)
                                 })
                         } else {
-                            console.log("The store not found ==> ", idguichet);
                             GStores.create({
                                 idguichet: parseInt(idguichet),
                                 transaction: trans,
@@ -106,7 +106,6 @@ export const __controlerGstore = {
             return Response(res, 500, error)
         }
     },
-
     getstore: async (req, res, next) => {
         const { idguichet } = req.params
         try {
@@ -127,7 +126,8 @@ export const __controlerGstore = {
             })
                 .then(async st => {
                     if (st instanceof GStores) {
-                        const { items } = st;
+                        let { items } = st;
+                        items = Array.isArray(items) ? [...items] : JSON.parse(items)
                         const produits = []
                         for (let index = 0; index < items.length; index++) {
                             const { idproduit, qte } = items[index];
@@ -146,10 +146,13 @@ export const __controlerGstore = {
                         delete st['items']
                         return Response(res, 200, { ...st, __tbl_produits: produits })
                     } else {
-                        return Response(res, 400, st)
+                        return Response(res, 200, st)
                     }
                 })
                 .catch(er => {
+                    console.log('====================================');
+                    console.log(er);
+                    console.log('====================================');
                     return Response(res, 503, er)
                 })
         } catch (error) {
