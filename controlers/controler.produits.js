@@ -78,7 +78,6 @@ export const __controlerProduits = {
             return Response(res, 500, error)
         }
     },
-
     add: async (req, res, next) => {
         const {
             barcode,
@@ -92,7 +91,9 @@ export const __controlerProduits = {
         if (!produit || !idcategory || !prix || !currency || !idunity)
             return Response(res, 401, "This request must have at least !produit || !idcategory || !prix || !currency || !description || !idunity")
         try {
+            const hasbarcode = barcode ? 1 : 0
             Produits.create({
+                hasbarcode,
                 idunity,
                 barcode,
                 uuid: uuidv4(),
@@ -116,7 +117,6 @@ export const __controlerProduits = {
             return Response(res, 500, error)
         }
     },
-
     update: async (req, res, next) => {
         const { idproduit } = req.params
         const {
@@ -157,7 +157,6 @@ export const __controlerProduits = {
             return Response(res, 500, error)
         }
     },
-
     delete: async (req, res, next) => {
         const { idproduit } = req.params;
         try {

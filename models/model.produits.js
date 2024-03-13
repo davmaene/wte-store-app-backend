@@ -12,6 +12,11 @@ export const Produits = Configs.define('__tbl_produits', {
         allowNull: true,
         defaultValue: randomLongNumber({ length: 6 })
     },
+    hasbarcode: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+        defaultValue: 0
+    },
     uuid: {
         type: Sequelize.STRING,
         allowNull: true,
