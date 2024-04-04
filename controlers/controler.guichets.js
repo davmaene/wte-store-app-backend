@@ -1,7 +1,7 @@
 import { capitalizeWords, findUnityMesure } from "../helpers/helper.helper.js"
 import { Response } from "../helpers/helper.message.js"
 import { Categories } from "../models/model.categories.js"
-import { Guichets as Laboratories } from "../models/model.guichets.js"
+import { Guichets, Guichets as Laboratories } from "../models/model.guichets.js"
 import { GStores } from "../models/model.guichetstores.js"
 import { Produits } from "../models/model.produits.js"
 import { Provinces } from "../models/model.provinces.js"
@@ -196,6 +196,28 @@ export const __controlerLaoratories = {
                     console.log("Two ==> ", err);
                     console.log('====================================');
                     return Response(res, 503, err)
+                })
+        } catch (error) {
+            return Response(res, 500, error)
+        }
+    },
+    delete: async (req, res, next) => {
+        const { idboutique } = req.params;
+        if (!idboutique) return Response(res, 401, "This request must have at least !idboutiques")
+        try {
+            Guichets.findOne({
+                where: {
+                    id: idboutique
+                }
+            })
+                .then(btq => {
+                    if (btq instanceof Guichets) {
+                        btq.destroy()
+                        return Response(res, 200, `Item with id ${idboutique} was successfuly deleted !`)
+                    }
+                })
+                .catch(err => {
+                    return Response(res, 500, err)
                 })
         } catch (error) {
             return Response(res, 500, error)
