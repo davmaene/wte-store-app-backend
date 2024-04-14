@@ -13,6 +13,11 @@ export const Ventes = Configs.define('__tbl_ventes', {
         allowNull: false,
         defaultValue: ESCAPESTRING
     },
+    taransaction: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        defaultValue: "0"
+    },
     idproduit: {
         type: Sequelize.INTEGER,
         allowNull: false,

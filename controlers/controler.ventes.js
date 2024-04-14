@@ -11,16 +11,14 @@ import { v4 as uuidv4 } from 'uuid';
 
 export const __controlerVentes = {
     add: async (req, res, next) => {
-        
-        const { transaction, customer, phone, cart } = req.body;
-        if (!transaction || !cart) return Response(res, 401, "This request must have at least transaction || cart")
-        const { idproduit, qte: asqte, prix: asprix, currency: ascurrency } = req.body;
+
+        const { idtransaction, customer, phone, cart } = req.body;
+        if (!idtransaction || !cart) return Response(res, 401, "This request must have at least idtransaction || cart")
         const { __id, idguichet } = req.currentuser;
         if (!__id || !idguichet) return Response(res, 401, "User not recognize to proced with this request !")
-        if (!idproduit) return Response(res, 401, "This request must have at least idproduit !")
 
         try {
-            // const transaction = await Configs.transaction()
+            const transaction = await Configs.transaction()
             const prd = await Produits.findOne({
                 where: {
                     id: parseInt(idproduit)
@@ -36,7 +34,7 @@ export const __controlerVentes = {
                 limit: 1
             }, { transaction })
 
-            if (prd && prd instanceof Produits && store && store[0] instanceof GStores) {
+            if (store && store[0] instanceof GStores) {
                 store = store[0]
                 const { items, transaction: astransaction } = store;
                 const sales = [];
@@ -45,24 +43,29 @@ export const __controlerVentes = {
                 let oldqtep = 0;
                 const { id: asid, prix, currency, qte } = prd;
 
-                for (let index = 0; index < items.length; index++) {
-                    const { idproduit: id, qte: oldqte } = items[index];
-                    if (parseInt(id) === parseInt(asid)) {
-                        idx = id
-                        item = items[index]
-                        oldqtep = oldqte
-                        const sale = await Ventes.create({
-                            uuid: uuidv4(),
-                            idproduit,
-                            prixvente: parseFloat(prix),
-                            currency,
-                            createdby: __id,
-                            idguichet,
-                            status: 1
-                        }, { transaction })
-                        sales.push(sale)
+                for (let index = 0; index < cart.length; index++) {
+                    const { realid, qte } = array[index];
+                    for (let index = 0; index < items.length; index++) {
+                        const { idproduit: id, qte: oldqte } = items[index];
+                        if (parseInt(id) === parseInt(asid)) {
+                            idx = id
+                            item = items[index]
+                            oldqtep = oldqte
+                            const sale = await Ventes.create({
+                                uuid: uuidv4(),
+                                idproduit,
+                                prixvente: parseFloat(prix),
+                                currency,
+                                createdby: __id,
+                                idguichet,
+                                status: 1
+                            }, { transaction })
+                            sales.push(sale)
+                        }
                     }
+
                 }
+
                 if (sales.length > 0) {
                     const newitems = replacerProduit({ items, idproduit: idx, item: { ...item, qte: oldqtep - 1 } })
                     prd.update({
