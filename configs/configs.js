@@ -14,6 +14,12 @@ export const Configs = new Sequelize(
         host: APPDBHOST,
         dialect: APPDBDIALECT || "mysql",
         logging: false,
+        retry: {
+            match: [/Deadlock/i],
+            max: 3,
+            backoffBase: 1000,
+            backoffExponent: 1.5
+        },
         redisConfigsdialectOptions: {
             lockTimeout: 5000
         },
