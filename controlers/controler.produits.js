@@ -4,8 +4,80 @@ import { Categories } from "../models/model.categories.js";
 import { Produits } from "../models/model.produits.js"
 import { v4 as uuidv4 } from 'uuid';
 import { ServiceImage } from "../services/services.images.js";
+import { GStores } from "../models/model.guichetstores.js";
+import { Guichets } from "../models/model.guichets.js";
 
 export const __controlerProduits = {
+    getonbycodeinstore: async (req, res, next) => {
+        const { barcode } = req.params
+        const { phone: asphone, uuid, roles, __id, iat, exp, jti, idguichet } = req.currentuser;
+        if (!barcode) return Response(res, 401, "This request must have at least barcode !")
+        try {
+            Guichets.hasOne(GStores, { foreignKey: "idguichet" });
+            GStores.belongsTo(Guichets, { foreignKey: "idguichet" });
+
+            GStores.findOne({
+                where: {
+                    idguichet: parseInt(idguichet)
+                },
+                include: [
+                    {
+                        model: Guichets,
+                        required: true
+                    }
+                ]
+            })
+                .then(async st => {
+                    if (st instanceof GStores) {
+                        let { items } = st;
+                        items = Array.isArray(items) ? [...items] : JSON.parse(items)
+                        const produits = []
+                        for (let index = 0; index < items.length; index++) {
+                            const { idproduit, qte } = items[index];
+                            Categories.hasOne(Produits, { foreignKey: "idcategory" })
+                            Produits.belongsTo(Categories, { foreignKey: "idcategory" })
+                            let prd = await Produits.findOne({
+                                include: [
+                                    {
+                                        model: Categories,
+                                        required: true,
+                                        attributes: ['id', 'category']
+                                    }
+                                ],
+                                where: {
+                                    barcode,
+                                    id: parseInt(idproduit),
+                                },
+                                // attributes: ['id', 'prix', 'barcode', 'produit', 'currency', 'description', 'uuid']
+                            })
+                            if (prd instanceof Produits) {
+                                prd = prd.toJSON()
+                                const { idunity } = prd
+                                produits.push({
+                                    ...prd,
+                                    qte,
+                                    __tbl_unities: findUnityMesure({ idunity })
+                                });
+                            }
+                        }
+                        if (produits.length > 0) {
+                            // st = st.toJSON()
+                            // delete st['items']
+                            return Response(res, 200, { ...produits[0] })
+                        } else {
+                            return Response(res, 404, {})
+                        }
+                    } else {
+                        return Response(res, 404, {})
+                    }
+                })
+                .catch(er => {
+                    return Response(res, 503, er)
+                })
+        } catch (error) {
+            return Response(res, 500, error)
+        }
+    },
     getonbycode: async (req, res, next) => {
         const { barcode } = req.params
         try {

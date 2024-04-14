@@ -13,10 +13,6 @@ export const __controlerStore = {
         const { items } = req.body
         const { phone: asphone, uuid, roles, __id, iat, exp, jti } = req.currentuser;
 
-        console.log('====================================');
-        console.log(req.body);
-        console.log('====================================');
-
         if (!Array.isArray(items)) return Response(res, 401, "Items must be a type of array !")
         try {
             const newItesms = []
@@ -129,7 +125,7 @@ export const __controlerStore = {
                                 attributes: ['id', 'barcode', 'produit', 'currency', 'prix', 'idcategory']
                             })
                             if (prd instanceof Produits) {
-                                const { idcategory } = prd.toJSON()
+                                const { idcategory, barcode } = prd.toJSON()
                                 const categ = await Categories.findOne({
                                     where: {
                                         id: idcategory
@@ -137,6 +133,7 @@ export const __controlerStore = {
                                 })
                                 __.push({
                                     ...items[index],
+                                    barcode,
                                     __tbl_category: categ.toJSON(),
                                     __tbl_produit: prd.toJSON(),
                                     __tbl_unities: findUnityMesure({ idunity })
