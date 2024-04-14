@@ -1,4 +1,4 @@
-import { addPersentToPrice, capitalizeWords, findUnityMesure } from "../helpers/helper.helper.js"
+import { addPersentToPrice, capitalizeWords, converterDevise, findUnityMesure } from "../helpers/helper.helper.js"
 import { Response } from "../helpers/helper.message.js"
 import { Categories } from "../models/model.categories.js";
 import { Produits } from "../models/model.produits.js"
@@ -24,21 +24,30 @@ export const __controlerProduits = {
                     }
                 ]
             })
-                .then(rows => {
-                    if (rows instanceof Produits) {
-                        rows = [rows].map(l => {
-                            const { idunity } = l.toJSON()
-                            return {
-                                ...l.toJSON(),
-                                __tbl_unities: findUnityMesure({ idunity })
-                            }
+                .then(async row => {
+                    if (row instanceof Produits) {
+                        const { idunity, currency, prix } = row.toJSON();
+                        const v = await converterDevise({
+                            amount: prix,
+                            currency
                         })
-                        return Response(res, 200, rows[0])
+                        const { code, message, data } = v;
+                        const { currency: ascurrency, amount: asamount } = data
+
+                        return Response(res, 200, {
+                            ...row.toJSON(),
+                            prix: asamount,
+                            currency: ascurrency,
+                            __tbl_unities: findUnityMesure({ idunity })
+                        })
                     } else {
-                        return Response(res, 404, rows)
+                        return Response(res, 404, row)
                     }
                 })
                 .catch((err) => {
+                    console.log('====================================');
+                    console.log(err);
+                    console.log('====================================');
                     return Response(res, 503, err)
                 })
         } catch (error) {
