@@ -140,7 +140,7 @@ export const converterDevise = async ({ amount, currency }) => {
     if (configs.length > 0) {
         const { id, taux_change, commission_price } = configs[0]
         const tauxDeChange = taux_change || 3000;
-        currency = currency.toUpperCase()
+        currency = String(currency).trim().toUpperCase()
         if (currency === 'USD') {
             return { code: 200, message: `Amount converted from USD to CDF with tx(${tauxDeChange})`, data: { currency: "CDF", amount: amount * tauxDeChange } };
         } else if (currency === 'CDF') {

@@ -11,13 +11,16 @@ import { v4 as uuidv4 } from 'uuid';
 
 export const __controlerVentes = {
     add: async (req, res, next) => {
+        
+        const { transaction, customer, phone, cart } = req.body;
+        if (!transaction || !cart) return Response(res, 401, "This request must have at least transaction || cart")
         const { idproduit, qte: asqte, prix: asprix, currency: ascurrency } = req.body;
         const { __id, idguichet } = req.currentuser;
         if (!__id || !idguichet) return Response(res, 401, "User not recognize to proced with this request !")
         if (!idproduit) return Response(res, 401, "This request must have at least idproduit !")
 
         try {
-            const transaction = await Configs.transaction()
+            // const transaction = await Configs.transaction()
             const prd = await Produits.findOne({
                 where: {
                     id: parseInt(idproduit)

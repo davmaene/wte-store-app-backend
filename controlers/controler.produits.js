@@ -33,7 +33,6 @@ export const __controlerProduits = {
                         })
                         const { code, message, data } = v;
                         const { currency: ascurrency, amount: asamount } = data;
-
                         return Response(res, 200, {
                             ...row.toJSON(),
                             prix: asamount,
