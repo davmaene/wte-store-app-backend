@@ -32,7 +32,7 @@ export const __controlerProduits = {
                             currency
                         })
                         const { code, message, data } = v;
-                        const { currency: ascurrency, amount: asamount } = data
+                        const { currency: ascurrency, amount: asamount } = data;
 
                         return Response(res, 200, {
                             ...row.toJSON(),
@@ -45,9 +45,6 @@ export const __controlerProduits = {
                     }
                 })
                 .catch((err) => {
-                    console.log('====================================');
-                    console.log(err);
-                    console.log('====================================');
                     return Response(res, 503, err)
                 })
         } catch (error) {

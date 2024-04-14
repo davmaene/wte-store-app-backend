@@ -142,9 +142,9 @@ export const converterDevise = async ({ amount, currency }) => {
         const tauxDeChange = taux_change || 3000;
         currency = currency.toUpperCase()
         if (currency === 'USD') {
-            return { code: 200, message: `Amount converted from USD to CDF with tx(${tauxDeChange})`, data: { currency, amount: amount * tauxDeChange } };
+            return { code: 200, message: `Amount converted from USD to CDF with tx(${tauxDeChange})`, data: { currency: "CDF", amount: amount * tauxDeChange } };
         } else if (currency === 'CDF') {
-            return { code: 200, message: 'Currency is still CDF', data: { currency, amount } };
+            return { code: 200, message: 'Currency is still CDF', data: { currency: "CDF", amount } };
         } else {
             return { code: 500, message: 'Not supported currency !', data: { currency, amount } };
         }
