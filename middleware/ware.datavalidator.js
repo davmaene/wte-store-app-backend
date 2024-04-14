@@ -77,7 +77,7 @@ export const subcategoryModel = [
 ];
 
 export const userModelOnSignin = [
-    body('phone').notEmpty().isMobilePhone().trim().withMessage("`phone` the value entered for the phone it seems to be not a valide phone number !"),
+    body('phone').notEmpty().isString().trim().withMessage("`phone` the value entered for the phone it seems to be not a valide phone number !"),
     body('password').notEmpty().isString().withMessage("`Password` is required !")
 ];
 

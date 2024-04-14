@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import { Services } from '../services/services.all.js';
+import { Config } from '../models/model.configs.js';
 
 dotenv.config();
 
@@ -126,4 +127,28 @@ export const findUnityMesure = ({ idunity }) => {
 
     if (index !== -1) item = items[index]
     return item;
+}
+
+export const converterDevise = async ({ amount, currency }) => {
+    const configs = await Config.findAll({
+        order: [['id', 'DESC']],
+        limit: 1
+        // where: {
+        //     id: 1
+        // }
+    })
+    if (configs.length > 0) {
+        const { id, taux_change, commission_price } = configs[0]
+        const tauxDeChange = taux_change || 3000;
+        currency = currency.toUpperCase()
+        if (currency === 'USD') {
+            return { code: 200, message: `Amount converted from USD to CDF with tx(${tauxDeChange})`, data: { currency, amount: amount * tauxDeChange } };
+        } else if (currency === 'CDF') {
+            return { code: 200, message: 'Currency is still CDF', data: { currency, amount } };
+        } else {
+            return { code: 500, message: 'Not supported currency !', data: { currency, amount } };
+        }
+    } else {
+        return { code: 500, message: 'Error occured ! we can not find Configs :::', data: { currency, amount } };
+    }
 }
