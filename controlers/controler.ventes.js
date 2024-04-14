@@ -52,8 +52,11 @@ export const __controlerVentes = {
                             item = items[index]
                             oldqtep = oldqte
                             const sale = await Ventes.create({
+                                customer,
+                                phone,
+                                taransaction: idtransaction,
                                 uuid: uuidv4(),
-                                idproduit,
+                                idproduit: realid,
                                 prixvente: parseFloat(prix),
                                 currency,
                                 createdby: __id,
