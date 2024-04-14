@@ -19,12 +19,6 @@ export const __controlerVentes = {
 
         try {
             const transaction = await Configs.transaction()
-            const prd = await Produits.findOne({
-                where: {
-                    id: parseInt(idproduit)
-                },
-                attributes: ['id', 'currency', 'prix', 'produit', 'qte']
-            }, { transaction })
 
             let store = await GStores.findAll({
                 order: [['id', 'DESC']],
@@ -41,10 +35,16 @@ export const __controlerVentes = {
                 let idx = 0
                 let item = {}
                 let oldqtep = 0;
-                const { id: asid, prix, currency, qte } = prd;
 
                 for (let index = 0; index < cart.length; index++) {
                     const { realid, qte } = array[index];
+                    const prd = await Produits.findOne({
+                        where: {
+                            id: parseInt(realid)
+                        },
+                        attributes: ['id', 'currency', 'prix', 'produit', 'qte']
+                    }, { transaction })
+                    const { id: asid, prix, currency } = prd;
                     for (let index = 0; index < items.length; index++) {
                         const { idproduit: id, qte: oldqte } = items[index];
                         if (parseInt(id) === parseInt(asid)) {
