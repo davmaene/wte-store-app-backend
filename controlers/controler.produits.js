@@ -8,7 +8,7 @@ import { GStores } from "../models/model.guichetstores.js";
 import { Guichets } from "../models/model.guichets.js";
 
 export const __controlerProduits = {
-    getonbycodeinstore: async (req, res, next) => {
+    getonbycodeinstore: async (req, res, next) => { // get one product by codebar
         const { barcode } = req.params
         const { phone: asphone, uuid, roles, __id, iat, exp, jti, idguichet } = req.currentuser;
         if (!barcode) return Response(res, 401, "This request must have at least barcode !")
@@ -33,7 +33,7 @@ export const __controlerProduits = {
                         items = Array.isArray(items) ? [...items] : JSON.parse(items)
                         const produits = []
                         for (let index = 0; index < items.length; index++) {
-                            const { idproduit, qte } = items[index];
+                            const { idproduit, qte, prix } = items[index];
                             Categories.hasOne(Produits, { foreignKey: "idcategory" })
                             Produits.belongsTo(Categories, { foreignKey: "idcategory" })
                             let prd = await Produits.findOne({
@@ -52,10 +52,14 @@ export const __controlerProduits = {
                             })
                             if (prd instanceof Produits) {
                                 prd = prd.toJSON()
-                                const { idunity } = prd
+                                const { idunity, currency } = prd;
+                                const { code, data, message } = await converterDevise({ amount: prix, currency });
+                                const { amount, currency: ascurrency } = data
                                 produits.push({
                                     ...prd,
                                     qte,
+                                    prix: amount,
+                                    currency: ascurrency,
                                     __tbl_unities: findUnityMesure({ idunity })
                                 });
                             }
