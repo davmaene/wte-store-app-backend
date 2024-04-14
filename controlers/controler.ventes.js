@@ -37,14 +37,14 @@ export const __controlerVentes = {
                 let oldqtep = 0;
 
                 for (let index = 0; index < cart.length; index++) {
-                    const { realid, qte } = array[index];
+                    const { realid, qte } = cart[index];
                     const prd = await Produits.findOne({
                         where: {
                             id: parseInt(realid)
                         },
                         attributes: ['id', 'currency', 'prix', 'produit', 'qte']
                     }, { transaction })
-                    const { id: asid, prix, currency } = prd;
+                    const { id: asid, prix, currency, qte: currentqte } = prd;
                     for (let index = 0; index < items.length; index++) {
                         const { idproduit: id, qte: oldqte } = items[index];
                         if (parseInt(id) === parseInt(asid)) {
@@ -63,7 +63,13 @@ export const __controlerVentes = {
                                 idguichet,
                                 status: 1
                             }, { transaction })
-                            sales.push(sale)
+                            console.log('====================================');
+                            console.log(sale.toJSON());
+                            console.log('====================================');
+                            prd.update({
+                                qte: currentqte - qte
+                            })
+                            sales.push(sale.toJSON())
                         }
                     }
 
@@ -71,9 +77,6 @@ export const __controlerVentes = {
 
                 if (sales.length > 0) {
                     const newitems = replacerProduit({ items, idproduit: idx, item: { ...item, qte: oldqtep - 1 } })
-                    prd.update({
-                        qte: qte - 1
-                    })
 
                     GStores.update({
                         updatedon: now({ options: {} }),
@@ -86,8 +89,8 @@ export const __controlerVentes = {
 
                     transaction.commit()
                     return Response(res, 200, {
-                        ...sales[0].toJSON(),
-                        __tbl_produits: prd
+                        // ...sales[0].toJSON(),
+                        __tbl_produits: sales
                     })
                 } else {
                     transaction.rollback()
@@ -98,6 +101,9 @@ export const __controlerVentes = {
                 return Response(res, 400, { message: "Product not found OR Store not found !", produit: prd, store, idguichet })
             }
         } catch (error) {
+            console.log('====================================');
+            console.log(error);
+            console.log('====================================');
             return Response(res, 500, error)
         }
     },
