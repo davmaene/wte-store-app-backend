@@ -109,7 +109,9 @@ export const __controlerGstore = {
         }
     },
     getlistproduitinstoreparguichet: async (req, res, next) => {
-        const { idguichet } = req.params
+        // const { idguichet } = req.params
+        const { phone: asphone, uuid, roles, __id, iat, exp, jti, idguichet } = req.currentuser;
+
         try {
 
             Guichets.hasOne(GStores, { foreignKey: "idguichet" });
