@@ -161,6 +161,9 @@ export const __controlerVentes = {
                     return Response(res, 200, { list: rows, length: count, benefices: String(b).concat(" CDF")  })
                 })
                 .catch(err => {
+                    console.log('====================================');
+                    console.log(err);
+                    console.log('====================================');
                     return Response(res, 500, err)
                 })
         } catch (error) {
@@ -229,6 +232,9 @@ export const __controlerVentes = {
                     return Response(res, 200, { list: rows, length: count, benefices: String(b).concat(" CDF")  })
                 })
                 .catch(err => {
+                    console.log('====================================');
+                    console.log(err);
+                    console.log('====================================');
                     return Response(res, 500, err)
                 })
         } catch (error) {
