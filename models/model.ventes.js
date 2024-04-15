@@ -2,6 +2,7 @@ import Sequelize from 'sequelize';
 import { Configs } from '../configs/configs.js';
 import { now, nowInUnix } from '../helpers/helper.moment.js';
 import dotenv from 'dotenv';
+import { endOfDayInUnix } from '../helpers/helper.momentwithoutlocal.js';
 
 dotenv.config()
 
@@ -55,7 +56,7 @@ export const Ventes = Configs.define('__tbl_ventes', {
     createdonunix: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        defaultValue: nowInUnix({ options: {} })
+        defaultValue: endOfDayInUnix({ options: {} })
     },
     createdon: {
         type: Sequelize.STRING,

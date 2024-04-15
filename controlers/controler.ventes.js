@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import { Configs } from "../configs/configs.js";
-import { replacerProduit } from "../helpers/helper.helper.js";
+import { converterDevise, replacerProduit } from "../helpers/helper.helper.js";
 import { Response } from "../helpers/helper.message.js"
 import { Guichets } from "../models/model.guichets.js";
 import { GStores } from "../models/model.guichetstores.js";
@@ -201,6 +201,17 @@ export const __controlerVentes = {
                 }
             })
                 .then(({ rows, count }) => {
+                    const benefices = [];
+                    for (let index = 0; index < Array.from(rows).length; index++) {
+
+                        const { currency, prixachat, prixvente } = rows[index];
+                        const { data: d1 } = converterDevise({ amount: prixachat, currency })
+                        const { amount: as_prix_achat } = d1;
+                        const { data: d2 } = converterDevise({ amount: prixvente, currency })
+                        const { amount: as_prix_vente } = d2;
+
+                        benefices.push(as_prix_vente - as_prix_achat)
+                    }
                     return Response(res, 200, { list: rows, length: count })
                 })
                 .catch(err => {
