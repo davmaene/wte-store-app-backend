@@ -21,7 +21,7 @@ const limiter = rateLimit({
     standardHeaders: false,
     legacyHeaders: false,
     validate: {
-        xForwardedForHeader: true
+        xForwardedForHeader: false
     },
     message: {
         status: 429,
@@ -29,7 +29,7 @@ const limiter = rateLimit({
         data: {}
     }
 });
-
+__app.set('trust proxy', true);
 __app.use(cors());
 __app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 __app.use(express.json({ limit: '50mb' }));

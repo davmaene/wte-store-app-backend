@@ -34,7 +34,7 @@ export const Users = Configs.define('__tbl_users', {
     email: {
         type: Sequelize.STRING,
         allowNull: true,
-        defaultValue: ""
+        defaultValue: ESCAPESTRING
     },
     phone: {
         type: Sequelize.STRING,
