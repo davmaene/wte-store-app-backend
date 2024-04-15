@@ -164,6 +164,9 @@ export const __controlerVentes = {
                     return Response(res, 500, err)
                 })
         } catch (error) {
+            console.log('====================================');
+            console.log(error);
+            console.log('====================================');
             return Response(res, 500, error)
         }
     },
@@ -229,6 +232,9 @@ export const __controlerVentes = {
                     return Response(res, 500, err)
                 })
         } catch (error) {
+            console.log('====================================');
+            console.log(error);
+            console.log('====================================');
             return Response(res, 500, error)
         }
     }

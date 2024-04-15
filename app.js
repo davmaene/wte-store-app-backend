@@ -20,6 +20,9 @@ const limiter = rateLimit({
     max: parseInt(APPRATELIMITMAXREQS),
     standardHeaders: false,
     legacyHeaders: false,
+    validate: {
+        xForwardedForHeader: false
+    },
     message: {
         status: 429,
         message: "Too many requests please try again in " + APPRATELIMITTIMING + " minutes",
