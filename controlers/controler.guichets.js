@@ -139,7 +139,7 @@ export const __controlerLaoratories = {
                 ]
             })
                 .then((guichet) => {
-                    if (guichet instanceof Laboratories) {
+                    if (guichet instanceof Guichets) {
                         GStores.findOne({
                             where: {
                                 idguichet: parseInt(idguichet)
@@ -188,7 +188,7 @@ export const __controlerLaoratories = {
                                 return Response(res, 503, er)
                             })
                     } else {
-                        return Response(res, 404, guichet)
+                        return Response(res, 200, { __tbl_gstore: {}, __tbl_produits: [] })
                     }
                 })
                 .catch(err => {

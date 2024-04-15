@@ -32,6 +32,11 @@ export const Ventes = Configs.define('__tbl_ventes', {
         type: Sequelize.INTEGER,
         allowNull: false,
     },
+    prixachat: {
+        type: Sequelize.FLOAT,
+        allowNull: false,
+        defaultValue: 0
+    },
     prixvente: {
         type: Sequelize.FLOAT,
         allowNull: false,

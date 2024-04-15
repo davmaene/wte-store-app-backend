@@ -11,12 +11,11 @@ import { v4 as uuidv4 } from 'uuid';
 
 export const __controlerVentes = {
     add: async (req, res, next) => {
-
+        
         const { idtransaction, customer, phone, cart } = req.body;
         if (!idtransaction || !cart) return Response(res, 401, "This request must have at least idtransaction || cart")
         const { __id, idguichet } = req.currentuser;
         if (!__id || !idguichet) return Response(res, 401, "User not recognize to proced with this request !")
-
         try {
             const transaction = await Configs.transaction()
 
@@ -30,14 +29,15 @@ export const __controlerVentes = {
 
             if (store && store[0] instanceof GStores) {
                 store = store[0]
-                const { items, transaction: astransaction } = store;
+                let { items, transaction: astransaction } = store;
+                items = Array.isArray(items) ? [...items] : JSON.parse(items)
                 const sales = [];
                 let idx = 0
                 let item = {}
                 let oldqtep = 0;
 
                 for (let index = 0; index < cart.length; index++) {
-                    const { realid, qte } = cart[index];
+                    const { realid, qte, idproduit } = cart[index];
                     const prd = await Produits.findOne({
                         where: {
                             id: parseInt(realid)
@@ -46,7 +46,7 @@ export const __controlerVentes = {
                     }, { transaction })
                     const { id: asid, prix, currency, qte: currentqte } = prd;
                     for (let index = 0; index < items.length; index++) {
-                        const { idproduit: id, qte: oldqte } = items[index];
+                        const { idproduit: id, qte: oldqte, prix: asptixfromstore } = items[index];
                         if (parseInt(id) === parseInt(asid)) {
                             idx = id
                             item = items[index]
@@ -57,18 +57,16 @@ export const __controlerVentes = {
                                 taransaction: idtransaction,
                                 uuid: uuidv4(),
                                 idproduit: realid,
-                                prixvente: parseFloat(prix),
+                                prixvente: parseFloat(asptixfromstore),
+                                prixachat: parseFloat(prix),
                                 currency,
                                 createdby: __id,
                                 idguichet,
                                 status: 1
                             }, { transaction })
-                            console.log('====================================');
-                            console.log(sale.toJSON());
-                            console.log('====================================');
-                            prd.update({
-                                qte: currentqte - qte
-                            })
+                            // prd.update({
+                            //     qte: currentqte - qte
+                            // })
                             sales.push(sale.toJSON())
                         }
                     }
@@ -93,12 +91,18 @@ export const __controlerVentes = {
                         __tbl_produits: sales
                     })
                 } else {
+                    console.log('====================================');
+                    console.log({ message: "Product not found OR Store not found !", store: store.toJSON(), idguichet, cart });
+                    console.log('====================================');
                     transaction.rollback()
                     return Response(res, 400, "Operation of sale faild !")
                 }
             } else {
                 transaction.rollback()
-                return Response(res, 400, { message: "Product not found OR Store not found !", produit: prd, store, idguichet })
+                console.log('====================================');
+                console.log({ message: "Product not found OR Store not found !", idguichet });
+                console.log('====================================');
+                return Response(res, 400, { message: "Product not found OR Store not found !", idguichet })
             }
         } catch (error) {
             console.log('====================================');
@@ -151,7 +155,7 @@ export const __controlerVentes = {
         }
     },
     listbyguichet: async (req, res, next) => {
-        const { idguichet } = req.params
+        const { __id, idguichet } = req.currentuser;
         try {
             Ventes.findAndCountAll({
                 order: [['id', 'DESC']],
