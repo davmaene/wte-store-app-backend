@@ -29,7 +29,7 @@ const limiter = rateLimit({
         data: {}
     }
 });
-__app.set('trust proxy', true);
+__app.set('trust proxy', false);
 __app.use(cors());
 __app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 __app.use(express.json({ limit: '50mb' }));
