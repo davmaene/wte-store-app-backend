@@ -13,8 +13,16 @@ export const nowPlusDays = ({ options: { days } }) => {
 
 export const nowInUnix = ({ options }) => {
     options = options ? options : {}
-    return moment().endOf('day').unix();
+    return moment().endOf('day').unix(); // je prend le temps de la fin de journee
 };
+
+// export const endOfDayInUnix = () => {
+//     return moment().endOf('day').unix();
+// };
+
+// export const startOfDayInUnix = () => {
+//     return moment().startOf('day').unix();
+// };
 
 export const daysPerTypeSouscription = ({ type }) => {
     let days = 0;
@@ -28,8 +36,8 @@ export const daysPerTypeSouscription = ({ type }) => {
         case 3:
             return days = 90;
             break;
-        case 4: 
-        return days = 365;
+        case 4:
+            return days = 365;
             break;
         default:
             return days = 30;
@@ -48,7 +56,7 @@ export const addDaysThenReturnUnix = ({ days }) => {
         case 3:
             days = 90;
             break;
-        case 4: 
+        case 4:
             days = 365;
             break;
         default:
@@ -62,3 +70,15 @@ export const addDaysThenReturnUnix = ({ days }) => {
 export const dateFormated = ({ longDate }) => {
     return moment(longDate).format("L")
 };
+
+export const unixToDate = ({ unix }) => {
+    const date = new Date(unix * 1000);
+
+    const options = {
+        year: 'numeric', month: 'long', day: 'numeric', // Format de la date
+        hour: 'numeric', minute: 'numeric', second: 'numeric', // Format de l'heure
+        timeZone: 'UTC' // Fuseau horaire, si nécessaire
+    };
+
+    return date.toLocaleString('fr-FR', options);
+}

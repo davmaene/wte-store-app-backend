@@ -1,17 +1,20 @@
+import { Op } from "sequelize";
 import { Configs } from "../configs/configs.js";
 import { replacerProduit } from "../helpers/helper.helper.js";
 import { Response } from "../helpers/helper.message.js"
-import { now } from "../helpers/helper.moment.js";
 import { Guichets } from "../models/model.guichets.js";
 import { GStores } from "../models/model.guichetstores.js";
 import { Produits } from "../models/model.produits.js";
 import { Users } from "../models/model.users.js";
 import { Ventes } from "../models/model.ventes.js";
 import { v4 as uuidv4 } from 'uuid';
+import moment from "moment";
+import { endOfDayInUnix, startOfDayInUnix } from "../helpers/helper.momentwithoutlocal.js";
+import { unixToDate } from "../helpers/helper.moment.js";
 
 export const __controlerVentes = {
     add: async (req, res, next) => {
-        
+
         const { idtransaction, customer, phone, cart } = req.body;
         if (!idtransaction || !cart) return Response(res, 401, "This request must have at least idtransaction || cart")
         const { __id, idguichet } = req.currentuser;
@@ -157,11 +160,44 @@ export const __controlerVentes = {
     listbyguichet: async (req, res, next) => {
         const { __id, idguichet } = req.currentuser;
         try {
+
+            Users.hasOne(Users, { foreignKey: "id" });
+            Ventes.belongsTo(Users, { foreignKey: "createdby" });
+
+            Produits.hasOne(Ventes, { foreignKey: "id" });
+            Ventes.belongsTo(Produits, { foreignKey: "idproduit" });
+
+            Guichets.hasOne(Ventes, { foreignKey: "id" });
+            Ventes.belongsTo(Guichets, { foreignKey: "idguichet" });
+
+            const start = startOfDayInUnix()
+            const end = endOfDayInUnix()
+
             Ventes.findAndCountAll({
                 order: [['id', 'DESC']],
+                include: [
+                    {
+                        model: Users,
+                        required: true,
+                        attributes: ['id', 'nom', 'postnom', 'prenom', 'phone']
+                    },
+                    {
+                        model: Produits,
+                        required: true
+                    },
+                    {
+                        model: Guichets,
+                        required: true
+                    }
+                ],
+                // logging: true,
                 where: {
                     idguichet,
-                    status: 1
+                    status: 1,
+                    [Op.and]: [
+                        { createdonunix: { [Op.gt]: start } },
+                        { createdonunix: { [Op.lte]: end } }
+                    ]
                 }
             })
                 .then(({ rows, count }) => {
