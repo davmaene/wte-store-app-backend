@@ -106,7 +106,13 @@ export const Users = Configs.define('__tbl_users', {
     }
 }, {
     timestamps: false,
-    freezeTableName: true
+    freezeTableName: true,
+    indexes: [
+        {
+            unique: true,
+            fields: ['phone', 'email']
+        }
+    ]
 });
 
 Users.sync({ alter: true })

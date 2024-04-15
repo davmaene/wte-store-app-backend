@@ -21,7 +21,7 @@ const limiter = rateLimit({
     standardHeaders: false,
     legacyHeaders: false,
     validate: {
-        xForwardedForHeader: false
+        xForwardedForHeader: true
     },
     message: {
         status: 429,
