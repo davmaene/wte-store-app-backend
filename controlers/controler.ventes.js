@@ -157,8 +157,8 @@ export const __controlerVentes = {
 
                         benefices.push(as_prix_vente - as_prix_achat)
                     }
-                    const b = renderAsLisibleNumber({ nombre: Array.from(benefices).reduce((p, r) => p + r) })
-                    return Response(res, 200, { list: rows, length: count, benefices: String(b).concat(" CDF")  })
+                    const b = renderAsLisibleNumber({ nombre: Array.from([...[0, 0], ...benefices]).reduce((p, r) => p + r) })
+                    return Response(res, 200, { list: rows, length: count, benefices: String(b).concat(" CDF") })
                 })
                 .catch(err => {
                     console.log('====================================');
@@ -228,8 +228,8 @@ export const __controlerVentes = {
 
                         benefices.push(as_prix_vente - as_prix_achat)
                     }
-                    const b = renderAsLisibleNumber({ nombre: Array.from(benefices).reduce((p, r) => p + r) })
-                    return Response(res, 200, { list: rows, length: count, benefices: String(b).concat(" CDF")  })
+                    const b = renderAsLisibleNumber({ nombre: Array.from([...[0, 0], ...benefices]).reduce((p, r) => p + r) })
+                    return Response(res, 200, { list: rows, length: count, benefices: String(b).concat(" CDF") })
                 })
                 .catch(err => {
                     console.log('====================================');
