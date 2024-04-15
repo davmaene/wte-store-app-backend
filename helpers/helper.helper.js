@@ -127,7 +127,19 @@ export const findUnityMesure = ({ idunity }) => {
 
     if (index !== -1) item = items[index]
     return item;
-}
+};
+
+export const renderAsLisibleNumber = ({ nombre }) => {
+    let nombreString = nombre.toString();
+
+    let partieEntiere = nombreString.split('.')[0];
+    let partieDecimale = nombreString.split('.')[1] || '';
+
+    partieEntiere = partieEntiere.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+
+    let nombreLisible = partieEntiere + (partieDecimale ? '.' + partieDecimale : '');
+    return nombreLisible;
+};
 
 export const converterDevise = async ({ amount, currency }) => {
     const configs = await Config.findAll({
@@ -151,4 +163,4 @@ export const converterDevise = async ({ amount, currency }) => {
     } else {
         return { code: 500, message: 'Error occured ! we can not find Configs :::', data: { currency, amount } };
     }
-}
+};

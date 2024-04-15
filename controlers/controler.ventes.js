@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import { Configs } from "../configs/configs.js";
-import { converterDevise, replacerProduit } from "../helpers/helper.helper.js";
+import { converterDevise, renderAsLisibleNumber, replacerProduit } from "../helpers/helper.helper.js";
 import { Response } from "../helpers/helper.message.js"
 import { Guichets } from "../models/model.guichets.js";
 import { GStores } from "../models/model.guichetstores.js";
@@ -8,9 +8,7 @@ import { Produits } from "../models/model.produits.js";
 import { Users } from "../models/model.users.js";
 import { Ventes } from "../models/model.ventes.js";
 import { v4 as uuidv4 } from 'uuid';
-import moment from "moment";
 import { endOfDayInUnix, startOfDayInUnix } from "../helpers/helper.momentwithoutlocal.js";
-import { unixToDate } from "../helpers/helper.moment.js";
 
 export const __controlerVentes = {
     add: async (req, res, next) => {
@@ -147,8 +145,20 @@ export const __controlerVentes = {
                     }
                 ]
             })
-                .then(({ rows, count }) => {
-                    return Response(res, 200, { list: rows, length: count })
+                .then(async ({ rows, count }) => {
+                    const benefices = [];
+                    for (let index = 0; index < Array.from(rows).length; index++) {
+
+                        const { currency, prixachat, prixvente } = rows[index];
+                        const { data: d1 } = await converterDevise({ amount: prixachat, currency })
+                        const { amount: as_prix_achat } = d1;
+                        const { data: d2 } = await converterDevise({ amount: prixvente, currency })
+                        const { amount: as_prix_vente } = d2;
+
+                        benefices.push(as_prix_vente - as_prix_achat)
+                    }
+                    const b = renderAsLisibleNumber({ nombre: Array.from(benefices).reduce((p, r) => p + r) })
+                    return Response(res, 200, { list: rows, length: count, benefices: String(b).concat(" CDF")  })
                 })
                 .catch(err => {
                     return Response(res, 500, err)
@@ -200,19 +210,20 @@ export const __controlerVentes = {
                     ]
                 }
             })
-                .then(({ rows, count }) => {
+                .then(async ({ rows, count }) => {
                     const benefices = [];
                     for (let index = 0; index < Array.from(rows).length; index++) {
 
                         const { currency, prixachat, prixvente } = rows[index];
-                        const { data: d1 } = converterDevise({ amount: prixachat, currency })
+                        const { data: d1 } = await converterDevise({ amount: prixachat, currency })
                         const { amount: as_prix_achat } = d1;
-                        const { data: d2 } = converterDevise({ amount: prixvente, currency })
+                        const { data: d2 } = await converterDevise({ amount: prixvente, currency })
                         const { amount: as_prix_vente } = d2;
 
                         benefices.push(as_prix_vente - as_prix_achat)
                     }
-                    return Response(res, 200, { list: rows, length: count })
+                    const b = renderAsLisibleNumber({ nombre: Array.from(benefices).reduce((p, r) => p + r) })
+                    return Response(res, 200, { list: rows, length: count, benefices: String(b).concat(" CDF")  })
                 })
                 .catch(err => {
                     return Response(res, 500, err)
