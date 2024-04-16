@@ -9,6 +9,7 @@ import { Users } from "../models/model.users.js";
 import { Ventes } from "../models/model.ventes.js";
 import { v4 as uuidv4 } from 'uuid';
 import { endOfDayInUnix, startOfDayInUnix } from "../helpers/helper.momentwithoutlocal.js";
+import { now } from "../helpers/helper.moment.js";
 
 export const __controlerVentes = {
     add: async (req, res, next) => {
@@ -57,6 +58,7 @@ export const __controlerVentes = {
                                 phone,
                                 taransaction: idtransaction,
                                 uuid: uuidv4(),
+                                qte: qte,
                                 idproduit: realid,
                                 prixvente: parseFloat(asptixfromstore),
                                 prixachat: parseFloat(prix),
@@ -68,15 +70,18 @@ export const __controlerVentes = {
                             // prd.update({
                             //     qte: currentqte - qte
                             // })
-                            sales.push(sale.toJSON())
+                            sales.push({ ...sale.toJSON(), idx: asid, oldqte })
                         }
                     }
 
                 }
 
                 if (sales.length > 0) {
-                    const newitems = replacerProduit({ items, idproduit: idx, item: { ...item, qte: oldqtep - 1 } })
-
+                    let newitems = []
+                    for (let index = 0; index < sales.length; index++) {
+                        const { idproduit, qte, prixvente, oldqte } = sales[index];
+                        newitems = replacerProduit({ items, idproduit, item: { ...{ idproduit, prix: prixvente }, qte: oldqte - qte } })
+                    }
                     GStores.update({
                         updatedon: now({ options: {} }),
                         items: [...newitems]
@@ -92,23 +97,14 @@ export const __controlerVentes = {
                         __tbl_produits: sales
                     })
                 } else {
-                    console.log('====================================');
-                    console.log({ message: "Product not found OR Store not found !", store: store.toJSON(), idguichet, cart });
-                    console.log('====================================');
                     transaction.rollback()
                     return Response(res, 400, "Operation of sale faild !")
                 }
             } else {
                 transaction.rollback()
-                console.log('====================================');
-                console.log({ message: "Product not found OR Store not found !", idguichet });
-                console.log('====================================');
                 return Response(res, 400, { message: "Product not found OR Store not found !", idguichet })
             }
         } catch (error) {
-            console.log('====================================');
-            console.log(error);
-            console.log('====================================');
             return Response(res, 500, error)
         }
     },

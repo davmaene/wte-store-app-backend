@@ -24,6 +24,11 @@ export const Ventes = Configs.define('__tbl_ventes', {
         allowNull: false,
         defaultValue: ESCAPESTRING
     },
+    qte: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 1
+    },
     taransaction: {
         type: Sequelize.STRING,
         allowNull: false,
