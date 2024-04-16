@@ -14,7 +14,7 @@ import { Villages } from "../models/model.villages.js";
 import { Middleware } from "../middleware/ware.cookies.js";
 import { v4 as uuidv4 } from 'uuid';
 import { now } from "../helpers/helper.moment.js";
-import { Op } from "sequelize";
+import { Op, where } from "sequelize";
 import { Guichets } from "../models/model.guichets.js";
 
 export const __controlerUsers = {
@@ -29,74 +29,85 @@ export const __controlerUsers = {
 
         try {
 
-            const transaction = await Configs.transaction();
-            Users.create({
-                uuid,
-                nom: capitalizeWords({ text: nom }),
-                postnom: capitalizeWords({ text: postnom }),
-                prenom: prenom ? capitalizeWords({ text: prenom }) : null,
-                email,
-                phone: fillphone({ phone }),
-                adresse,
-                idprovince,
-                idterritoire,
-                idvillage,
-                idlabo,
-                genre,
-                idguichet,
-                password: pwd,
-                isvalidated: 1,
-                verificationcode: code_
-            }, { transaction })
-                .then(user => {
-                    if (user instanceof Users) {
+            const guichet = await Guichets.findOne({
+                where: {
+                    id: idguichet
+                }
+            })
 
-                        user = user.toJSON();
-                        delete user['password'];
-                        delete user['status'];
-                        delete user['idprovince'];
-                        delete user['idterritoire'];
-                        delete user['idvillage'];
-                        delete user['verificationcode'];
-                        delete user['isvalidated'];
+            if (guichet instanceof Guichets) {
+                const transaction = await Configs.transaction();
+                Users.create({
+                    uuid,
+                    nom: capitalizeWords({ text: nom }),
+                    postnom: capitalizeWords({ text: postnom }),
+                    prenom: prenom ? capitalizeWords({ text: prenom }) : null,
+                    email,
+                    phone: fillphone({ phone }),
+                    adresse,
+                    idprovince,
+                    idterritoire,
+                    idvillage,
+                    idlabo,
+                    genre,
+                    idguichet,
+                    password: pwd,
+                    isvalidated: 1,
+                    verificationcode: code_
+                }, { transaction })
+                    .then(user => {
+                        if (user instanceof Users) {
 
-                        Services.addRoleToUser({
-                            input: {
-                                idrole,
-                                iduser: user && user['id']
-                            },
-                            transaction,
-                            cb: (err, done) => {
-                                if (done) {
-                                    const { code } = done;
-                                    if (code === 200) {
-                                        // WTE-${code_} \nBonjour ${capitalizeWords({ text: nom })} votre compte a été crée avec succès. Ceci est votre code de vérification
-                                        Services.onSendSMS({
-                                            to: fillphone({ phone }),
-                                            content: `Bonjour ${capitalizeWords({ text: nom })}, compte crée avec succès; votre mot de passe est ${password}`,
-                                            cb: (err, done) => { }
-                                        });
+                            user = user.toJSON();
+                            delete user['password'];
+                            delete user['status'];
+                            delete user['idprovince'];
+                            delete user['idterritoire'];
+                            delete user['idvillage'];
+                            delete user['verificationcode'];
+                            delete user['isvalidated'];
 
-                                        transaction.commit()
-                                        return Response(res, 200, { user, code: code_ })
+                            Services.addRoleToUser({
+                                input: {
+                                    idrole,
+                                    iduser: user && user['id']
+                                },
+                                transaction,
+                                cb: (err, done) => {
+                                    if (done) {
+                                        const { code } = done;
+                                        if (code === 200) {
+                                            // WTE-${code_} \nBonjour ${capitalizeWords({ text: nom })} votre compte a été crée avec succès. Ceci est votre code de vérification
+                                            Services.onSendSMS({
+                                                to: fillphone({ phone }),
+                                                content: `Bonjour ${capitalizeWords({ text: nom })}, compte crée avec succès; votre mot de passe est ${password}`,
+                                                cb: (err, done) => { }
+                                            });
+
+                                            transaction.commit()
+                                            return Response(res, 200, { user, code: code_ })
+                                        } else {
+                                            transaction.rollback()
+                                            return Response(res, 400, "Role not initialized correctly !")
+                                        }
                                     } else {
                                         transaction.rollback()
                                         return Response(res, 400, "Role not initialized correctly !")
                                     }
-                                } else {
-                                    transaction.rollback()
-                                    return Response(res, 400, "Role not initialized correctly !")
                                 }
-                            }
-                        })
-                    } else return Response(res, 400, user)
-                })
-                .catch(err => {
-                    transaction.rollback()
-                    const { name, errors } = err;
-                    const { message } = errors[0];
-                    return Response(res, 503, { name, error: message })
-                })
+                            })
+                        } else return Response(res, 400, user)
+                    })
+                    .catch(err => {
+                        transaction.rollback()
+                        const { name, errors } = err;
+                        const { message } = errors[0];
+                        return Response(res, 503, { name, error: message })
+                    })
+            } else {
+                return Response(res, 404, `${idguichet} does not match in guichet in the guichet's list !`)
+            }
+
         } catch (error) {
             return Response(res, 500, error)
         }
@@ -212,8 +223,14 @@ export const __controlerUsers = {
                         }
                     } else {
                         transaction.rollback()
+                        console.log('====================================');
+                        console.log(user);
+                        console.log('====================================');
                         return Response(res, 404, `${fillphone({ phone })} is not recongnize in User's list !`)
                     }
+                })
+                .catch(err => {
+                    return Response(res, 500, err)
                 })
         } catch (error) {
             return Response(res, 500, error)
@@ -570,7 +587,7 @@ export const __controlerUsers = {
                                 Services.onSendSMS({
                                     to: fillphone({ phone }),
                                     content: `Bonjour ${nom}, votre mot de passe vient d'etre changé en ${newpassword}`,
-                                    cb: (er, dn) => {}
+                                    cb: (er, dn) => { }
                                 })
                                 return Response(res, 200, { ...formatUserModel({ model: us }) })
                             })
