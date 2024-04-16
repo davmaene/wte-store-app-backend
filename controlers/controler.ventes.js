@@ -73,7 +73,6 @@ export const __controlerVentes = {
                             sales.push({ ...sale.toJSON(), idx: asid, oldqte })
                         }
                     }
-
                 }
 
                 if (sales.length > 0) {
