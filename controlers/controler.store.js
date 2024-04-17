@@ -67,7 +67,8 @@ export const __controlerStore = {
                 limit: 1
             })
                 .then(async store => {
-                    const { items } = store.toJSON();
+                    let { items } = store.toJSON();
+                    items = Array.isArray(items) ? [...items] : JSON.parse(items)
                     const __ = []
                     for (let index = 0; index < items.length; index++) {
                         const { idproduit, idunity } = items[index];
@@ -88,9 +89,11 @@ export const __controlerStore = {
                     return Response(res, 200, store)
                 })
                 .catch(err => {
+                    console.log(err);
                     return Response(res, 500, err)
                 })
         } catch (error) {
+            console.log(error);
             return Response(res, 500, error)
         }
     },
