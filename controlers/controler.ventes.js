@@ -48,7 +48,7 @@ export const __controlerVentes = {
                     }, { transaction })
                     const { id: asid, prix, currency, qte: currentqte } = prd;
                     for (let index = 0; index < items.length; index++) {
-                        const { idproduit: id, qte: oldqte, prix: asptixfromstore } = items[index];
+                        const { idproduit: id, qte: oldqte, prix: asptixfromstore, prixachat } = items[index];
                         if (parseInt(id) === parseInt(asid)) {
                             idx = id
                             item = items[index]
@@ -61,7 +61,7 @@ export const __controlerVentes = {
                                 qte: qte,
                                 idproduit: realid,
                                 prixvente: parseFloat(asptixfromstore),
-                                prixachat: parseFloat(prix),
+                                prixachat: parseFloat(prixachat),
                                 currency,
                                 createdby: __id,
                                 idguichet,

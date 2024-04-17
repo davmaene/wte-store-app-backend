@@ -36,6 +36,7 @@ export const __controlerGstore = {
                     if (prd instanceof Produits) {
                         const { prix, qte: qtedisponible } = prd;
                         if (parseInt(qtecommander) <= parseInt(qtedisponible)) {
+                            const { prixachat } = Array.from(asitems).filter(it => it['idproduit'] === idproduit)[0]
                             prd.update({
                                 qte: parseInt(qtedisponible) - parseInt(qtecommander),
                                 updatedon: now({ options: {} }),
@@ -43,7 +44,8 @@ export const __controlerGstore = {
                             newItesms.push({
                                 idproduit,
                                 prix: parseFloat(prix),
-                                qte: qtecommander
+                                qte: qtecommander,
+                                prixachat
                             })
                         } else {
                             notapprouvedItems.push(items[index])
