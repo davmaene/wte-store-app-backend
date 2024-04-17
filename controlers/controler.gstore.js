@@ -21,7 +21,9 @@ export const __controlerGstore = {
                 order: [['id', 'DESC']],
             })
             if (store instanceof Stores) {
-                const { items: asitems } = store;
+                // let { items: asitems } = store;
+                let { items: asitems } = store.toJSON();
+                asitems = Array.isArray(asitems) ? [...asitems] : JSON.parse(asitems)
                 const newItesms = []
                 const approuvedItems = [];
                 const notapprouvedItems = [];
