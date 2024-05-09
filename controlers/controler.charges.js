@@ -39,7 +39,7 @@ export const __controlerChages = {
                 .then(charge => {
                     if (charge instanceof Charges) {
                         charge.destroy()
-                            .then(_ => Response(res, 200, `The item with id ${idcharge}`))
+                            .then(_ => Response(res, 200, `The item with id ${idcharge} has been deleted !`))
                             .catch(__ => Response(res, 404, `Item with id ${idcharge} was not found in this server !`))
                     } else {
                         return Response(res, 404, `Item with id ${idcharge} was not found in this server !`)
