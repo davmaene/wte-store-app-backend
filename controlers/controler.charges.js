@@ -28,7 +28,7 @@ export const __controlerChages = {
         }
     },
     deletecharge: async (req, res, next) => {
-        const { idcharge } = req.body;
+        const { idcharge } = req.params;
         if (!idcharge) return Response(res, 401, "This request must have at least idchage !")
         try {
             Charges.findOne({
@@ -39,6 +39,35 @@ export const __controlerChages = {
                 .then(charge => {
                     if (charge instanceof Charges) {
                         charge.destroy()
+                            .then(_ => Response(res, 200, `The item with id ${idcharge}`))
+                            .catch(__ => Response(res, 404, `Item with id ${idcharge} was not found in this server !`))
+                    } else {
+                        return Response(res, 404, `Item with id ${idcharge} was not found in this server !`)
+                    }
+                })
+                .catch(__ => Response(res, 404, `Item with id ${idcharge} was not found in this server !`))
+        } catch (error) {
+            return Response(res, 500, error)
+        }
+    },
+    update: async (req, res, next) => {
+        const { idcharge } = req.params;
+        const { charge, cout, currency, manytimes } = req.body;
+        if (!idcharge) return Response(res, 401, "This request must have at least idchage !")
+        try {
+            Charges.findOne({
+                where: {
+                    id: idcharge
+                }
+            })
+                .then(charge => {
+                    if (charge instanceof Charges) {
+                        charge.update({
+                            charge, 
+                            cout, 
+                            currency, 
+                            manytimes 
+                        })
                             .then(_ => Response(res, 200, `The item with id ${idcharge}`))
                             .catch(__ => Response(res, 404, `Item with id ${idcharge} was not found in this server !`))
                     } else {
