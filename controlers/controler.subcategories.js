@@ -1,5 +1,6 @@
 import { capitalizeWords } from "../helpers/helper.helper.js";
 import { Response } from "../helpers/helper.message.js"
+import { Categories } from "../models/model.categories.js";
 import { Subcategories } from "../models/model.subcategories.js"
 
 export const __controlerSubcategories = {
@@ -26,7 +27,14 @@ export const __controlerSubcategories = {
     },
     list: async (req, res, next) => {
         try {
+            Subcategories.belongsTo(Categories, { foreignKey: "idcategory" })
             Subcategories.findAndCountAll({
+                include: [
+                    {
+                        model: Categories,
+                        required: true
+                    }
+                ],
                 where: {
                     status: 1
                 }
