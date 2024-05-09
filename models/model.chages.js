@@ -8,6 +8,16 @@ export const Charges = Configs.define('__tbl_charges', {
         autoIncrement: true,
         allowNull: true,
     },
+    manytimes: {
+        type: DataTypes.INTEGER,
+        defaultValue: 1,
+        allowNull: true
+    },
+    status: {
+        type: DataTypes.INTEGER,
+        defaultValue: 1,
+        allowNull: true
+    },
     charges: DataTypes.STRING,
     cout: DataTypes.FLOAT,
     currency: {
