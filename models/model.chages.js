@@ -9,7 +9,12 @@ export const Charges = Configs.define('__tbl_charges', {
         allowNull: true,
     },
     charges: DataTypes.STRING,
-    cout: DataTypes.FLOAT
+    cout: DataTypes.FLOAT,
+    currency: {
+        type: DataTypes.STRING,
+        defaultValue: "USD",
+        allowNull: true
+    }
 
 }, { paranoid: true, timestamps: false, freezeTableName: true });
 
