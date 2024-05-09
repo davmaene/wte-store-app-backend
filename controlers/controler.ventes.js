@@ -9,7 +9,7 @@ import { Users } from "../models/model.users.js";
 import { Ventes } from "../models/model.ventes.js";
 import { v4 as uuidv4 } from 'uuid';
 import { endOfDayInUnix, startOfDayInUnix } from "../helpers/helper.momentwithoutlocal.js";
-import { now } from "../helpers/helper.moment.js";
+import { now, unixToDate } from "../helpers/helper.moment.js";
 
 export const __controlerVentes = {
     add: async (req, res, next) => {
@@ -170,6 +170,7 @@ export const __controlerVentes = {
     },
     listbyguichet: async (req, res, next) => {
         const { __id, idguichet } = req.currentuser;
+        console.log(req.currentuser);
         try {
 
             Users.hasOne(Users, { foreignKey: "id" });
@@ -183,6 +184,8 @@ export const __controlerVentes = {
 
             const start = startOfDayInUnix()
             const end = endOfDayInUnix()
+
+            console.log(unixToDate({ unix: 1713391199 }), unixToDate({ unix: start }), unixToDate({ unix: end }));
 
             Ventes.findAndCountAll({
                 order: [['id', 'DESC']],
