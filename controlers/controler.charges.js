@@ -60,21 +60,26 @@ export const __controlerChages = {
                     id: idcharge
                 }
             })
-                .then(charge => {
-                    if (charge instanceof Charges) {
-                        charge.update({
+                .then(charg => {
+                    if (charg instanceof Charges) {
+                        charg.update({
                             charges: charge,
                             cout,
                             currency,
                             manytimes
                         })
-                            .then(_ => Response(res, 200, `Item with id ${idcharge}`))
-                            .catch(__ => Response(res, 404, `Item with id ${idcharge} was not found in this server !`))
+                            .then(_ => Response(res, 200, `Item with id ${idcharge} successfuly updated !`))
+                            .catch(__ => {
+                                console.log('====================================');
+                                console.log(__);
+                                console.log('====================================');
+                                return Response(res, 404, `Item with id ${idcharge} was not found in this server !`)
+                            })
                     } else {
-                        return Response(res, 404, `Item with id ${idcharge} was not found in this server !`)
+                        return Response(res, 404, `The Item with id ${idcharge} was not found in this server !`)
                     }
                 })
-                .catch(__ => Response(res, 404, `Item with id ${idcharge} was not found in this server !`))
+                .catch(__ => Response(res, 404, `Item with id ${idcharge} was not found in this server ! ---`))
         } catch (error) {
             return Response(res, 500, error)
         }
