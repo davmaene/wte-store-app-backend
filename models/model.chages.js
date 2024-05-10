@@ -1,5 +1,10 @@
 import { DataTypes, Model } from 'sequelize'
 import { Configs } from '../configs/configs.js';
+import dotenv from 'dotenv';
+
+dotenv.config()
+
+const { ESCAPESTRING } = process.env
 
 export const Charges = Configs.define('__tbl_charges', {
     id: {
@@ -16,6 +21,11 @@ export const Charges = Configs.define('__tbl_charges', {
     status: {
         type: DataTypes.INTEGER,
         defaultValue: 1,
+        allowNull: true
+    },
+    description: {
+        type: DataTypes.TEXT,
+        defaultValue: ESCAPESTRING,
         allowNull: true
     },
     charges: DataTypes.STRING,

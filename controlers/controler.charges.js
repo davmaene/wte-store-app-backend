@@ -4,14 +4,15 @@ import { Charges } from "../models/model.chages.js";
 
 export const __controlerChages = {
     addcharge: async (req, res, next) => {
-        const { charge, cout, currency, manytimes } = req.body;
+        const { charge, cout, currency, manytimes, description } = req.body;
         if (!charge || !cout) return Response(res, 401, "This request must have at least !charges || !cout")
         try {
             Charges.create({
                 charges: capitalizeWords({ text: charge }),
                 currency,
                 cout: parseFloat(cout),
-                manytimes
+                manytimes,
+                description
             })
                 .then(cout_ => {
                     if (cout_ instanceof Charges) {
@@ -52,7 +53,7 @@ export const __controlerChages = {
     },
     update: async (req, res, next) => {
         const { idcharge } = req.params;
-        const { charge, cout, currency, manytimes } = req.body;
+        const { charge, cout, currency, manytimes, description } = req.body;
         if (!idcharge) return Response(res, 401, "This request must have at least idchage !")
         try {
             Charges.findOne({
@@ -66,7 +67,8 @@ export const __controlerChages = {
                             charges: charge,
                             cout,
                             currency,
-                            manytimes
+                            manytimes,
+                            description
                         })
                             .then(_ => Response(res, 200, `Item with id ${idcharge} successfuly updated !`))
                             .catch(__ => {
