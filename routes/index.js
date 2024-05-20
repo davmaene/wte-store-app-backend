@@ -14,6 +14,7 @@ import { __routesStores } from './routes.store.js';
 import { __routesVentes } from './routes.ventes.js';
 import { __routesAssets } from './routes.assets.js';
 import { __routesCharges } from './routes.charges.js';
+import { __routesConfigs } from './routes.configs.js';
 
 export const Routes = express.Router();
 
@@ -31,7 +32,7 @@ Routes.use('/produits', __routesProduits)
 Routes.use('/stores', __routesStores)
 Routes.use('/ventes', __routesVentes)
 Routes.use('/charges', __routesCharges)
-
+Routes.use('/configs', __routesConfigs)
 
 
 Routes.use("/", __routesAssets)
