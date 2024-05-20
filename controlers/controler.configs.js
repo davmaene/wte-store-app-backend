@@ -25,8 +25,10 @@ export const __controlerConfigs = {
                 if (isnew instanceof Config) {
                     isnew.update({
                         taux_change: parseFloat(taux_change),
-                        [commission_price]: commission_price ? parseFloat(commission_price) : undefined
+                        commission_price: commission_price ? parseFloat(commission_price) : undefined
                     })
+                        .then(__ => Response(res, 200, isnew))
+                        .catch(__ => Response(res, 400, __))
                 } else {
                     return Response(res, 400, isnew)
                 }
