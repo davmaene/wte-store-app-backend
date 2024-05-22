@@ -39,7 +39,7 @@ export const __controlerVentes = {
                 let oldqtep = 0;
 
                 for (let index = 0; index < cart.length; index++) {
-                    const { realid, qte, idproduit } = cart[index];
+                    const { realid, qte, idproduit, prix: prixfromcart, currency: currencyfromcart } = cart[index];
                     const prd = await Produits.findOne({
                         where: {
                             id: parseInt(realid)
@@ -60,16 +60,13 @@ export const __controlerVentes = {
                                 uuid: uuidv4(),
                                 qte: qte,
                                 idproduit: realid,
-                                prixvente: parseFloat(asptixfromstore),
+                                prixvente: prixfromcart ? parseFloat(prixfromcart) : asptixfromstore,
                                 prixachat: parseFloat(prixachat),
-                                currency,
+                                currency: currencyfromcart || currency,
                                 createdby: __id,
                                 idguichet,
                                 status: 1
                             }, { transaction })
-                            // prd.update({
-                            //     qte: currentqte - qte
-                            // })
                             sales.push({ ...sale.toJSON(), idx: asid, oldqte })
                         }
                     }
