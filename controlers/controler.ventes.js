@@ -43,6 +43,7 @@ export const __controlerVentes = {
 
             if (store && store[0] instanceof GStores) {
                 store = store[0]
+                const { amount: ascaisseamount } = caisse.toJSON()
                 let { items, transaction: astransaction } = store;
                 items = Array.isArray(items) ? [...items] : JSON.parse(items)
                 const sales = [];
@@ -86,7 +87,7 @@ export const __controlerVentes = {
 
                 if (sales.length > 0) {
                     let newitems = []
-                    const _itemsToCaisse = [0, 0];
+                    const _itemsToCaisse = [0, 0, ascaisseamount];
                     for (let index = 0; index < sales.length; index++) {
                         const { idproduit, qte, prixvente, oldqte, currency } = sales[index];
                         const { code, message, data } = await converterDevise({ amount: prixvente, currency });
@@ -94,6 +95,7 @@ export const __controlerVentes = {
                         _itemsToCaisse.push(amount)
                         newitems = replacerProduit({ items, idproduit, item: { ...{ idproduit, prix: prixvente }, qte: oldqte - qte } })
                     }
+                    
                     GStores.update({
                         updatedon: now({ options: {} }),
                         items: [...newitems]
