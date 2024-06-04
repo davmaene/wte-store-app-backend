@@ -1,4 +1,4 @@
-import { Op } from "sequelize";
+import { Op, where } from "sequelize";
 import { Configs } from "../configs/configs.js";
 import { converterDevise, renderAsLisibleNumber, replacerProduit } from "../helpers/helper.helper.js";
 import { Response } from "../helpers/helper.message.js"
@@ -10,6 +10,7 @@ import { Ventes } from "../models/model.ventes.js";
 import { v4 as uuidv4 } from 'uuid';
 import { endOfDayInUnix, startOfDayInUnix } from "../helpers/helper.momentwithoutlocal.js";
 import { now, unixToDate } from "../helpers/helper.moment.js";
+import { Caisses } from "../models/model.caisse.js";
 
 export const __controlerVentes = {
     add: async (req, res, next) => {
@@ -28,6 +29,17 @@ export const __controlerVentes = {
                 },
                 limit: 1
             }, { transaction })
+
+            let [caisse, isnewcaisse] = await Caisses.findOrCreate({
+                defaults: {
+                    idguichet,
+                    amount: 0,
+                    lastupdatedby: __id
+                },
+                where: {
+                    idguichet: parseInt(idguichet)
+                }
+            })
 
             if (store && store[0] instanceof GStores) {
                 store = store[0]
@@ -74,8 +86,12 @@ export const __controlerVentes = {
 
                 if (sales.length > 0) {
                     let newitems = []
+                    const _itemsToCaisse = [0, 0];
                     for (let index = 0; index < sales.length; index++) {
-                        const { idproduit, qte, prixvente, oldqte } = sales[index];
+                        const { idproduit, qte, prixvente, oldqte, currency } = sales[index];
+                        const { code, message, data } = await converterDevise({ amount: prixvente, currency });
+                        const { amount } = data
+                        _itemsToCaisse.push(amount)
                         newitems = replacerProduit({ items, idproduit, item: { ...{ idproduit, prix: prixvente }, qte: oldqte - qte } })
                     }
                     GStores.update({
@@ -85,6 +101,13 @@ export const __controlerVentes = {
                         where: {
                             transaction: astransaction
                         }
+                    })
+
+                    caisse.update({
+                        amount: _itemsToCaisse.reduce((prev, next) => parseFloat(prev) + parseFloat(next)),
+                        currency: "CDF",
+                        lastupdatedby: __id,
+                        updatedon: now({ options: {} })
                     })
 
                     transaction.commit()
