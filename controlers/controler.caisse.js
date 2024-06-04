@@ -1,3 +1,4 @@
+import { converterDevise } from "../helpers/helper.helper.js";
 import { Response } from "../helpers/helper.message.js";
 import { Caisses } from "../models/model.caisse.js";
 
@@ -9,9 +10,13 @@ export const __controlerCaisse = {
                     status: 1
                 }
             })
-                .then(cs => {
+                .then(async cs => {
                     const caisse = [0, 0, ...Array.from(cs).map(c => c['amount'])]
-                    return Response(res, 200, { amount: caisse.reduce((p, n) => parseFloat(p) + parseFloat(n)) })
+                    const { code, message, data } = await converterDevise({
+                        amount: caisse.reduce((p, n) => parseFloat(p) + parseFloat(n)),
+                        currency: "CDF"
+                    })
+                    return Response(res, 200, data)
                 })
                 .catch(err => Response(res, 500, err))
         } catch (error) {
@@ -20,7 +25,7 @@ export const __controlerCaisse = {
     },
     gatforguichet: async (req, res, next) => {
         const { idguichet } = req.params
-        if(!idguichet) return Response(res, 401, "This request must have at least idguichet ")
+        if (!idguichet) return Response(res, 401, "This request must have at least idguichet ")
         try {
             Caisses.findOne({
                 where: {
