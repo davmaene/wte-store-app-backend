@@ -1,4 +1,4 @@
-import { converterDevise } from "../helpers/helper.helper.js";
+import { converterDevise, renderAsLisibleNumber } from "../helpers/helper.helper.js";
 import { Response } from "../helpers/helper.message.js";
 import { Caisses } from "../models/model.caisse.js";
 
@@ -16,7 +16,12 @@ export const __controlerCaisse = {
                         amount: caisse.reduce((p, n) => parseFloat(p) + parseFloat(n)),
                         currency: "CDF"
                     })
-                    return Response(res, 200, data)
+                    if (code === 200) {
+                        const { amount, currency } = data
+                        return Response(res, 200, { amount: renderAsLisibleNumber({ nombre: amount }), currency } || { currency: "CDF", amount: 0 })
+                    } else {
+                        return Response(res, 200, { currency: "CDF", amount: 0 })
+                    }
                 })
                 .catch(err => Response(res, 500, err))
         } catch (error) {

@@ -1,3 +1,4 @@
+import { renderAsLisibleNumber } from "../helpers/helper.helper.js";
 import { Response } from "../helpers/helper.message.js";
 import { Config } from "../models/model.configs.js"
 
@@ -7,7 +8,12 @@ export const __controlerConfigs = {
             where: {}
         })
             .then((result) => {
-                return Response(res, 200, result)
+                if (result instanceof Config) {
+                    const { taux_change, commission_price } = result.toJSON()
+                    return Response(res, 200, { ...result, taux_change: renderAsLisibleNumber({ nombre: taux_change }) })
+                } else {
+                    return Response(res, 200, { commission_price: 0, taux_change: 0 })
+                }
             })
             .catch((err) => {
                 return Response(res, 500, err)
@@ -38,6 +44,6 @@ export const __controlerConfigs = {
             });
     },
     convertdevise: async (req, res, next) => {
-        
+
     }
 }
