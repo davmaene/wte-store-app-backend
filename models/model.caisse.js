@@ -17,6 +17,11 @@ export const Caisses = Configs.define('__tbl_caisses', {
         allowNull: false,
         defaultValue: "CDF"
     },
+    idguichet: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        defaultValue: 0
+    },
     createdon: {
         type: Sequelize.STRING,
         allowNull: false,
