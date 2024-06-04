@@ -22,7 +22,15 @@ export const __controlerCaisse = {
         const { idguichet } = req.params
         if(!idguichet) return Response(res, 401, "This request must have at least idguichet ")
         try {
-            
+            Caisses.findOne({
+                where: {
+                    idguichet
+                }
+            })
+                .then(cs => {
+                    return Response(res, 200, cs)
+                })
+                .catch(err => Response(res, 500, err))
         } catch (error) {
             return Response(res, 500, error)
         }
