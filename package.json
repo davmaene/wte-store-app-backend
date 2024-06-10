@@ -2,7 +2,7 @@
   "name": "store-app-backend",
   "version": "1.3.4",
   "type": "module",
-  "description": "App de collection des applications toutes de mukulima app",
+  "description": "App gestion de stock ",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
