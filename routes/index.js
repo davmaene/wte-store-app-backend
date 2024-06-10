@@ -36,6 +36,5 @@ Routes.use('/charges', __routesCharges)
 Routes.use('/configs', __routesConfigs)
 Routes.use('/caisses', __routesCaisses)
 
-
 Routes.use("/", __routesAssets)
 
