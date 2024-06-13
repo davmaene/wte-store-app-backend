@@ -1,6 +1,6 @@
 {
   "name": "store-app-backend",
-  "version": "1.3.5",
+  "version": "1.3.6",
   "type": "module",
   "description": "App gestion de stock ",
   "main": "app.js",
