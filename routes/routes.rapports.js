@@ -1,5 +1,5 @@
 import express from "express";
-import { __controlerRapports } from "../controlers/controler.rapport";
+import { __controlerRapports } from "../controlers/controler.rapport.js";
 
 export const __routesRapport = express.Router()
 
