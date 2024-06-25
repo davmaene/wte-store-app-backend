@@ -17,7 +17,7 @@ export const __controlerStore = {
         try {
             const newItesms = []
             for (let index = 0; index < items.length; index++) {
-                const { idproduit, qte, prixachat, prixunitaire, fournisseur } = items[index];
+                const { idproduit, qte, prixachat, prixunitaire, fournisseur, currency } = items[index];
                 const prd = await Produits.findOne({
                     where: {
                         id: parseInt(idproduit)
@@ -36,7 +36,8 @@ export const __controlerStore = {
                         prixachat: parseFloat(prixachat),
                         fournisseur,
                         qte,
-                        idunity
+                        idunity,
+                        currency
                     })
                 }
             }

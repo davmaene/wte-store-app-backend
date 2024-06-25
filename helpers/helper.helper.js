@@ -142,25 +142,35 @@ export const renderAsLisibleNumber = ({ nombre }) => {
 };
 
 export const converterDevise = async ({ amount, currency }) => {
-    const configs = await Config.findAll({
+    let configs = await Config.findAll({
         order: [['id', 'DESC']],
         limit: 1
         // where: {
         //     id: 1
         // }
     })
+    let result = {}
     if (configs.length > 0) {
-        const { id, taux_change, commission_price } = configs[0]
+        configs = configs[0]
+        amount = parseFloat(amount)
+        const { id, taux_change, commission_price } = configs.toJSON()
         const tauxDeChange = taux_change || 3000;
         currency = String(currency).trim().toUpperCase()
+        console.log('====================================');
+        console.log(configs.toJSON(), amount, currency);
+        console.log('====================================');
         if (currency === 'USD') {
-            return { code: 200, message: `Amount converted from USD to CDF with tx(${tauxDeChange})`, data: { currency: "CDF", amount: amount * tauxDeChange } };
+            result = { code: 200, message: `Amount converted from USD to CDF with tx(${tauxDeChange})`, data: { currency: "CDF", amount: amount * tauxDeChange } };
         } else if (currency === 'CDF') {
-            return { code: 200, message: 'Currency is still CDF', data: { currency: "CDF", amount } };
+            result = { code: 200, message: 'Currency is still CDF', data: { currency: "CDF", amount } };
         } else {
-            return { code: 500, message: 'Not supported currency !', data: { currency, amount } };
+            result = { code: 500, message: 'Not supported currency !', data: { currency, amount } };
         }
     } else {
-        return { code: 500, message: 'Error occured ! we can not find Configs :::', data: { currency, amount } };
+        result = { code: 500, message: 'Error occured ! we can not find Configs :::', data: { currency, amount } };
     }
+    console.log('====================================');
+    console.log(result);
+    console.log('====================================');
+    return result
 };

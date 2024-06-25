@@ -47,7 +47,8 @@ export const __controlerGstore = {
                                 idproduit,
                                 prix: parseFloat(prix),
                                 qte: qtecommander,
-                                prixachat
+                                prixachat,
+                                // currency
                             })
                         } else {
                             notapprouvedItems.push(items[index])
