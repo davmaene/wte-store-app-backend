@@ -11,7 +11,7 @@ export const __controlerProduits = {
     getonbycodeinstore: async (req, res, next) => { // get one product by codebar
         const { barcode } = req.params
         const { phone: asphone, uuid, roles, __id, iat, exp, jti, idguichet } = req.currentuser;
-        if (!barcode) return Response(res, 401, "This request must have at least barcode !")
+        if (!barcode) return Response(res, 401, "This request must have at least barcode !");
         try {
             Guichets.hasOne(GStores, { foreignKey: "idguichet" });
             GStores.belongsTo(Guichets, { foreignKey: "idguichet" });
@@ -52,9 +52,9 @@ export const __controlerProduits = {
                             })
                             if (prd instanceof Produits) {
                                 prd = prd.toJSON()
-                                const { idunity, currency } = prd;
+                                const { idunity, currency, prix } = prd;
                                 const { code, data, message } = await converterDevise({ amount: prix, currency });
-                                const { amount, currency: ascurrency } = data
+                                const { amount, currency: ascurrency } = data;
                                 produits.push({
                                     ...prd,
                                     qte,
@@ -103,6 +103,7 @@ export const __controlerProduits = {
                 .then(async row => {
                     if (row instanceof Produits) {
                         const { idunity, currency, prix } = row.toJSON();
+                        console.log("===================================> Row when trying to buy ==> ", row);
                         const v = await converterDevise({
                             amount: prix,
                             currency

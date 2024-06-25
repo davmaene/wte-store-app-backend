@@ -14,6 +14,9 @@ export const __controlerStore = {
         const { phone: asphone, uuid, roles, __id, iat, exp, jti } = req.currentuser;
 
         if (!Array.isArray(items)) return Response(res, 401, "Items must be a type of array !")
+        // console.log('====================================');
+        // console.log(items);
+        // console.log('====================================');
         try {
             const newItesms = []
             for (let index = 0; index < items.length; index++) {
@@ -37,7 +40,7 @@ export const __controlerStore = {
                         fournisseur,
                         qte,
                         idunity,
-                        currency
+                        // currency
                     })
                 }
             }

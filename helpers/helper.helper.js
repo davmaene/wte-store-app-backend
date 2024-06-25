@@ -154,11 +154,8 @@ export const converterDevise = async ({ amount, currency }) => {
         configs = configs[0]
         amount = parseFloat(amount)
         const { id, taux_change, commission_price } = configs.toJSON()
-        const tauxDeChange = taux_change || 3000;
+        const tauxDeChange = parseFloat(taux_change);
         currency = String(currency).trim().toUpperCase()
-        console.log('====================================');
-        console.log(configs.toJSON(), amount, currency);
-        console.log('====================================');
         if (currency === 'USD') {
             result = { code: 200, message: `Amount converted from USD to CDF with tx(${tauxDeChange})`, data: { currency: "CDF", amount: amount * tauxDeChange } };
         } else if (currency === 'CDF') {
@@ -169,8 +166,5 @@ export const converterDevise = async ({ amount, currency }) => {
     } else {
         result = { code: 500, message: 'Error occured ! we can not find Configs :::', data: { currency, amount } };
     }
-    console.log('====================================');
-    console.log(result);
-    console.log('====================================');
     return result
 };
