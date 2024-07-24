@@ -11,18 +11,66 @@ export const nowPlusDays = ({ options: { days } }) => {
     return moment().add(days, 'days').format("LTS, L")
 };
 
+export const getDayStartAndEnd = ({ unixTimestamp }) => {
+    // Convertir le timestamp UNIX en objet moment
+    const date = moment.unix(unixTimestamp);
+
+    // Obtenir le début du jour (00:00:00)
+    const startOfDay = date.startOf('day').unix();
+
+    // Obtenir la fin du jour (23:59:59)
+    const endOfDay = date.endOf('day').unix();
+
+    return {
+        startOfDay: startOfDay,
+        endOfDay: endOfDay
+    };
+}
+
+export const getMonthStartAndEnd = ({ unixTimestamp }) => {
+    // Convertir le timestamp UNIX en objet moment
+    const date = moment.unix(unixTimestamp);
+
+    // Obtenir le début du jour (00:00:00)
+    const startOfDay = date.startOf('month').unix();
+
+    // Obtenir la fin du jour (23:59:59)
+    const endOfDay = date.endOf('month').unix();
+
+    return {
+        startOfDay: startOfDay,
+        endOfDay: endOfDay
+    };
+}
+
+export const getYearStartAndEnd = ({ unixTimestamp }) => {
+    // Convertir le timestamp UNIX en objet moment
+    const date = moment.unix(unixTimestamp);
+
+    // Obtenir le début du jour (00:00:00)
+    const startOfDay = date.startOf('year').unix();
+
+    // Obtenir la fin du jour (23:59:59)
+    const endOfDay = date.endOf('year').unix();
+
+    return {
+        startOfDay: startOfDay,
+        endOfDay: endOfDay
+    };
+}
+
 export const nowInUnix = ({ options }) => {
     options = options ? options : {}
     return moment().endOf('day').unix(); // je prend le temps de la fin de journee
 };
 
-// export const endOfDayInUnix = () => {
-//     return moment().endOf('day').unix();
-// };
+export const endOfDayInUnix = () => {
+    return moment().endOf('day').unix();
+};
 
-// export const startOfDayInUnix = () => {
-//     return moment().startOf('day').unix();
-// };
+export const startOfDayInUnix = () => {
+    return moment().startOf('day').unix();
+};
 
 export const daysPerTypeSouscription = ({ type }) => {
     let days = 0;

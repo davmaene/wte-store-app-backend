@@ -9,7 +9,7 @@ import { Users } from "../models/model.users.js";
 import { Ventes } from "../models/model.ventes.js";
 import { v4 as uuidv4 } from 'uuid';
 import { endOfDayInUnix, startOfDayInUnix } from "../helpers/helper.momentwithoutlocal.js";
-import { now, unixToDate } from "../helpers/helper.moment.js";
+import { getDayStartAndEnd, getMonthStartAndEnd, getYearStartAndEnd, now, unixToDate } from "../helpers/helper.moment.js";
 import { Caisses } from "../models/model.caisse.js";
 
 export const __controlerVentes = {
@@ -95,7 +95,7 @@ export const __controlerVentes = {
                         _itemsToCaisse.push(amount)
                         newitems = replacerProduit({ items, idproduit, item: { ...{ idproduit, prix: prixvente }, qte: oldqte - qte } })
                     }
-                    
+
                     GStores.update({
                         updatedon: now({ options: {} }),
                         items: [...newitems]
@@ -190,7 +190,11 @@ export const __controlerVentes = {
             return Response(res, 500, error)
         }
     },
-    listallwithfilter: async (req, res, next) => {
+    listallwithfilterday: async (req, res, next) => {
+        const { unix } = req.query;
+        if (!unix || isNaN(parseInt(unix))) return Response(res, 401, "This request must have at least unix as date !");
+        const { startOfDay, endOfDay } = getDayStartAndEnd({ unixTimestamp: unix })
+
         try {
 
             Users.hasOne(Users, { foreignKey: "id" });
@@ -205,7 +209,151 @@ export const __controlerVentes = {
             Ventes.findAndCountAll({
                 order: [['id', 'DESC']],
                 where: {
-                    status: 1
+                    status: 1,
+                    [Op.and]: [
+                        { createdonunix: { [Op.gte]: startOfDay } },
+                        { createdonunix: { [Op.lte]: endOfDay } }
+                    ]
+                },
+                include: [
+                    {
+                        model: Users,
+                        required: true,
+                        attributes: ['id', 'nom', 'postnom', 'prenom', 'phone']
+                    },
+                    {
+                        model: Produits,
+                        required: true
+                    },
+                    {
+                        model: Guichets,
+                        required: true
+                    }
+                ]
+            })
+                .then(async ({ rows, count }) => {
+                    const benefices = [];
+                    for (let index = 0; index < Array.from(rows).length; index++) {
+
+                        const { currency, prixachat, prixvente } = rows[index];
+                        const { data: d1 } = await converterDevise({ amount: prixachat, currency })
+                        const { amount: as_prix_achat } = d1;
+                        const { data: d2 } = await converterDevise({ amount: prixvente, currency })
+                        const { amount: as_prix_vente } = d2;
+
+                        benefices.push(as_prix_vente - as_prix_achat)
+                    }
+                    const b = renderAsLisibleNumber({ nombre: Array.from([...[0, 0], ...benefices]).reduce((p, r) => p + r) })
+                    return Response(res, 200, { list: rows, length: count, benefices: String(b).concat(" CDF") })
+                })
+                .catch(err => {
+                    console.log('====================================');
+                    console.log(err);
+                    console.log('====================================');
+                    return Response(res, 500, err)
+                })
+        } catch (error) {
+            console.log('====================================');
+            console.log(error);
+            console.log('====================================');
+            return Response(res, 500, error)
+        }
+    },
+    listallwithfiltermonth: async (req, res, next) => {
+        const { unix } = req.query;
+        if (!unix || isNaN(parseInt(unix))) return Response(res, 401, "This request must have at least unix as date !");
+        const { startOfDay, endOfDay } = getMonthStartAndEnd({ unixTimestamp: unix })
+
+        try {
+
+            Users.hasOne(Users, { foreignKey: "id" });
+            Ventes.belongsTo(Users, { foreignKey: "createdby" });
+
+            Produits.hasOne(Ventes, { foreignKey: "id" });
+            Ventes.belongsTo(Produits, { foreignKey: "idproduit" });
+
+            Guichets.hasOne(Ventes, { foreignKey: "id" });
+            Ventes.belongsTo(Guichets, { foreignKey: "idguichet" });
+
+            Ventes.findAndCountAll({
+                order: [['id', 'DESC']],
+                where: {
+                    status: 1,
+                    [Op.and]: [
+                        { createdonunix: { [Op.gte]: startOfDay } },
+                        { createdonunix: { [Op.lte]: endOfDay } }
+                    ]
+                },
+                include: [
+                    {
+                        model: Users,
+                        required: true,
+                        attributes: ['id', 'nom', 'postnom', 'prenom', 'phone']
+                    },
+                    {
+                        model: Produits,
+                        required: true
+                    },
+                    {
+                        model: Guichets,
+                        required: true
+                    }
+                ]
+            })
+                .then(async ({ rows, count }) => {
+                    const benefices = [];
+                    for (let index = 0; index < Array.from(rows).length; index++) {
+
+                        const { currency, prixachat, prixvente } = rows[index];
+                        const { data: d1 } = await converterDevise({ amount: prixachat, currency })
+                        const { amount: as_prix_achat } = d1;
+                        const { data: d2 } = await converterDevise({ amount: prixvente, currency })
+                        const { amount: as_prix_vente } = d2;
+
+                        benefices.push(as_prix_vente - as_prix_achat)
+                    }
+                    const b = renderAsLisibleNumber({ nombre: Array.from([...[0, 0], ...benefices]).reduce((p, r) => p + r) })
+                    return Response(res, 200, { list: rows, length: count, benefices: String(b).concat(" CDF") })
+                })
+                .catch(err => {
+                    console.log('====================================');
+                    console.log(err);
+                    console.log('====================================');
+                    return Response(res, 500, err)
+                })
+        } catch (error) {
+            console.log('====================================');
+            console.log(error);
+            console.log('====================================');
+            return Response(res, 500, error)
+        }
+    },
+    listallwithfilteryear: async (req, res, next) => {
+        const { unix } = req.query;
+        if (!unix || isNaN(parseInt(unix))) return Response(res, 401, "This request must have at least unix as date !");
+        const { startOfDay, endOfDay } = getYearStartAndEnd({ unixTimestamp: unix })
+        console.log('====================================');
+        console.log(startOfDay, endOfDay, unixToDate({ unix: startOfDay }), unixToDate({ unix: endOfDay }));
+        console.log('====================================');
+        try {
+
+            Users.hasOne(Users, { foreignKey: "id" });
+            Ventes.belongsTo(Users, { foreignKey: "createdby" });
+
+            Produits.hasOne(Ventes, { foreignKey: "id" });
+            Ventes.belongsTo(Produits, { foreignKey: "idproduit" });
+
+            Guichets.hasOne(Ventes, { foreignKey: "id" });
+            Ventes.belongsTo(Guichets, { foreignKey: "idguichet" });
+
+            Ventes.findAndCountAll({
+                order: [['id', 'DESC']],
+                where: {
+                    status: 1,
+                    [Op.and]: [
+                        { createdonunix: { [Op.gte]: startOfDay } },
+                        { createdonunix: { [Op.lte]: endOfDay } }
+                    ]
                 },
                 include: [
                     {
