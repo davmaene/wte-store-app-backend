@@ -1,4 +1,4 @@
-import { findUnityMesure } from "../helpers/helper.helper.js";
+import { findUnityMesure, unityMesure } from "../helpers/helper.helper.js";
 import { Response } from "../helpers/helper.message.js"
 import { now } from "../helpers/helper.moment.js";
 import { randomLongNumber } from "../helpers/helper.random.js";
@@ -22,7 +22,6 @@ export const __controlerGstore = {
                 order: [['id', 'DESC']],
             })
             if (store instanceof Stores) {
-                // let { items: asitems } = store;
                 let { items: asitems } = store.toJSON();
                 asitems = Array.isArray(asitems) ? [...asitems] : JSON.parse(asitems)
                 const newItesms = []
@@ -38,7 +37,7 @@ export const __controlerGstore = {
                     })
 
                     if (prd instanceof Produits) {
-                        const { prix, qte: qte_disponible_in_produit } = prd;
+                        const { prix, qte: qte_disponible_in_produit, idunity } = prd;
                         const { prixachat, qte_disponible: qtedisponible, qte } = Array.from(asitems).filter(it => it['idproduit'] === idproduit)[0]
                         if (parseInt(qtecommander) <= parseInt(qtedisponible)) {
                             prd.update({
@@ -51,6 +50,7 @@ export const __controlerGstore = {
                                 qte: qtecommander,
                                 qte_disponible: qtecommander,//parseInt(qtedisponible) - parseInt(qtecommander),
                                 prixachat,
+                                idunity
                                 // currency
                             })
                             approuvedItems.push({
@@ -59,6 +59,7 @@ export const __controlerGstore = {
                                 qte,
                                 qte_disponible: parseInt(qtedisponible) - parseInt(qtecommander),
                                 prixachat,
+                                idunity
                                 // currency
                             })
                         } else {
@@ -214,6 +215,7 @@ export const __controlerGstore = {
                         for (let index = 0; index < items.length; index++) {
                             const { idproduit, qte } = items[index];
                             Categories.hasOne(Produits, { foreignKey: "idcategory" })
+                            unityMesure.hasOne(Produits, { foreignKey: "idunity" })
                             Produits.belongsTo(Categories, { foreignKey: "idcategory" })
                             let prd = await Produits.findOne({
                                 include: [
@@ -221,6 +223,11 @@ export const __controlerGstore = {
                                         model: Categories,
                                         required: true,
                                         attributes: ['id', 'category']
+                                    },
+                                    {
+                                        model: unityMesure,
+                                        required: true,
+                                        // attributes: ['id', 'category']
                                     }
                                 ],
                                 where: {
