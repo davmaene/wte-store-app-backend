@@ -47,6 +47,7 @@ export const __controlerGstore = {
                                 idproduit,
                                 prix: parseFloat(prix),
                                 qte: qtecommander,
+                                qte_disponible: qtecommander,
                                 prixachat,
                                 // currency
                             })
