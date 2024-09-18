@@ -18,6 +18,7 @@ export const __controlerGstore = {
 
         try {
             const store = await Stores.findOne({
+                where: {},
                 order: [['id', 'DESC']],
             })
             if (store instanceof Stores) {
@@ -35,19 +36,20 @@ export const __controlerGstore = {
                             id: parseInt(idproduit)
                         }
                     })
+
                     if (prd instanceof Produits) {
-                        const { prix, qte: qtedisponible } = prd;
+                        const { prix, qte: qte_disponible_in_produit } = prd;
+                        const { prixachat, qte_disponible: qtedisponible, qte } = Array.from(asitems).filter(it => it['idproduit'] === idproduit)[0]
                         if (parseInt(qtecommander) <= parseInt(qtedisponible)) {
-                            const { prixachat } = Array.from(asitems).filter(it => it['idproduit'] === idproduit)[0]
                             prd.update({
-                                qte: parseInt(qtedisponible) - parseInt(qtecommander),
+                                qte: parseInt(qte_disponible_in_produit) - parseInt(qtecommander),
                                 updatedon: now({ options: {} }),
                             })
                             newItesms.push({
                                 idproduit,
                                 prix: parseFloat(prix),
                                 qte: qtecommander,
-                                qte_disponible: qtecommander,
+                                qte_disponible: qtecommander,//parseInt(qtedisponible) - parseInt(qtecommander),
                                 prixachat,
                                 // currency
                             })
@@ -66,6 +68,9 @@ export const __controlerGstore = {
                             idguichet: parseInt(idguichet)
                         }
                     }).then(gstore => {
+                        store.update({
+                            items: newItesms
+                        })
                         if (gstore instanceof GStores) {
                             let { items } = gstore.toJSON()
                             items = Array.isArray(items) ? [...items] : JSON.parse(items)
@@ -104,13 +109,12 @@ export const __controlerGstore = {
                     })
 
                 } else {
-                    return Response(res, 400, "The principal store is empty ! so we can not process with the request ")
+                    return Response(res, 400, `The principal store is empty ! so we can not process with the request ${newItesms.length}`)
                 }
             } else {
                 return Response(res, 400, "The principal store is empty ! so we can not process with the request ")
             }
         } catch (error) {
-            console.log(error);
             return Response(res, 500, error)
         }
     },

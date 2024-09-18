@@ -38,9 +38,9 @@ export const __controlerStore = {
                         prix: parseFloat(prixunitaire),
                         prixachat: parseFloat(prixachat),
                         fournisseur,
+                        qte_disponible: qte,
                         qte,
-                        idunity,
-                        // currency
+                        idunity
                     })
                 }
             }

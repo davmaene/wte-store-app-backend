@@ -61,7 +61,7 @@ export const __controlerVentes = {
                     }, { transaction })
                     const { id: asid, prix, currency, qte: currentqte } = prd;
                     for (let index = 0; index < items.length; index++) {
-                        const { idproduit: id, qte: oldqte, prix: asptixfromstore, prixachat } = items[index];
+                        const { idproduit: id, qte: oldqte, prix: asptixfromstore, prixachat, qte_disponible } = items[index];
                         if (parseInt(id) === parseInt(asid)) {
                             idx = id
                             item = items[index]
@@ -80,10 +80,15 @@ export const __controlerVentes = {
                                 idguichet,
                                 status: 1
                             }, { transaction })
-                            sales.push({ ...sale.toJSON(), idx: asid, oldqte })
+
+                            sales.push({ ...sale.toJSON(), idx: asid, oldqte, qte_disponible })
                         }
                     }
                 }
+
+                console.log('====================================');
+                console.log(sales);
+                console.log('====================================');
 
                 if (sales.length > 0) {
                     let newitems = []
@@ -93,7 +98,7 @@ export const __controlerVentes = {
                         const { code, message, data } = await converterDevise({ amount: prixvente, currency });
                         const { amount } = data
                         _itemsToCaisse.push(amount)
-                        newitems = replacerProduit({ items, idproduit, item: { ...{ idproduit, prix: prixvente }, qte: oldqte - qte } })
+                        newitems = replacerProduit({ items, idproduit, item: { ...{ idproduit, prix: prixvente }, qte: oldqte - qte, qte_disponible: oldqte - qte } })
                     }
 
                     GStores.update({
