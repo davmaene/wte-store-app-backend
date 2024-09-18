@@ -53,6 +53,14 @@ export const __controlerGstore = {
                                 prixachat,
                                 // currency
                             })
+                            approuvedItems.push({
+                                idproduit,
+                                prix: parseFloat(prix),
+                                qte,
+                                qte_disponible: parseInt(qtedisponible) - parseInt(qtecommander),
+                                prixachat,
+                                // currency
+                            })
                         } else {
                             notapprouvedItems.push(items[index])
                         }
@@ -69,7 +77,7 @@ export const __controlerGstore = {
                         }
                     }).then(gstore => {
                         store.update({
-                            items: newItesms
+                            items: approuvedItems
                         })
                         if (gstore instanceof GStores) {
                             let { items } = gstore.toJSON()
